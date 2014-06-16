@@ -1357,16 +1357,18 @@ char *itostr31(const int &xx)
 
 char *itostr3(const int &xx)
 {
-  if (xx >= 100)
-    conv[0]=(xx/100)%10+'0';
+  int xx1 = abs(xx);
+  if (xx1 >= 100)
+    conv[0]=(xx1/100)%10+'0';
   else
-    conv[0]=' ';
-  if (xx >= 10)
-    conv[1]=(xx/10)%10+'0';
+    conv[0]='0';
+  if (xx1 >= 10)
+    conv[1]=(xx1/10)%10+'0';
   else
-    conv[1]=' ';
-  conv[2]=(xx)%10+'0';
+    conv[1]='0';
+  conv[2]=(xx1)%10+'0';
   conv[3]=0;
+  if (xx < 0) conv[0] = '-';
   return conv;
 }
 

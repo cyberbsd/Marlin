@@ -1,4 +1,11 @@
 ==========================
+Fork from Johann's Marlin fw deltabot branch.
+
+Configuration is for ATOM 3D printer from ALT Design
+http://atom3dp.com/ 
+
+
+==========================
 Marlin 3D Printer Firmware
 ==========================
 Marlin has a GPL license because I believe in open development.
