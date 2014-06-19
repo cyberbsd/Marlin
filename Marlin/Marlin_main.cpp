@@ -993,6 +993,7 @@ static void engage_z_probe() {
 #endif
     }
     #else // Deploy the Z probe by touching the belt, no servo needed.
+#ifndef ATOM //Not necessary for ATOM
     feedrate = homing_feedrate[X_AXIS];
     destination[X_AXIS] = 35;
     destination[Y_AXIS] = 72;
@@ -1003,6 +1004,7 @@ static void engage_z_probe() {
     destination[X_AXIS] = 0;
     prepare_move_raw();
     st_synchronize();
+#endif //ATOM
     #endif //SERVO_ENDSTOPS
 }
 
@@ -1020,6 +1022,7 @@ static void retract_z_probe() {
 #endif
     }
     #else // Push up the Z probe by moving the end effector, no servo needed.
+#ifndef ATOM //Not necessary for ATOM
     feedrate = homing_feedrate[X_AXIS];
     destination[Z_AXIS] = current_position[Z_AXIS] + 20;
     prepare_move_raw();
@@ -1043,6 +1046,7 @@ static void retract_z_probe() {
     destination[Z_AXIS] = current_position[Z_AXIS] + 30;
     prepare_move_raw();
     st_synchronize();
+#endif //ATOM
     #endif //SERVO_ENDSTOPS
 }
 
