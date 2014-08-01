@@ -1192,10 +1192,12 @@ static void homeaxis(int axis) {
 #ifdef DELTA
     // retrace by the amount specified in endstop_adj
     if (endstop_adj[axis] * axis_home_dir < 0) {
+      enable_endstops(false);  // Ignore Z probe while moving away from the top microswitch.
       plan_set_position(current_position[X_AXIS], current_position[Y_AXIS], current_position[Z_AXIS], current_position[E_AXIS]);
       destination[axis] = endstop_adj[axis];
       plan_buffer_line(destination[X_AXIS], destination[Y_AXIS], destination[Z_AXIS], destination[E_AXIS], feedrate/60, active_extruder);
       st_synchronize();
+      enable_endstops(true);  // Stop ignoring Z probe while moving up to the top microswitch again.
     }
 #endif
     axis_is_at_home(axis);
