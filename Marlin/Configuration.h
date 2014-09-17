@@ -172,7 +172,7 @@
 // 147 is Pt100 with 4k7 pullup
 // 110 is Pt100 with 1k pullup (non standard)
 
-#define TEMP_SENSOR_0 11
+#define TEMP_SENSOR_0 21 //11
 #define TEMP_SENSOR_1 0
 #define TEMP_SENSOR_2 0
 #define TEMP_SENSOR_BED 0
@@ -214,8 +214,8 @@
 // PID settings:
 // Comment the following line to disable PID and enable bang-bang.
 #define PIDTEMP
-#define BANG_MAX 255 // limits current to nozzle while in bang-bang mode; 255=full current
-#define PID_MAX 255 // limits current to nozzle while PID is active (see PID_FUNCTIONAL_RANGE below); 255=full current
+#define BANG_MAX 210 // limits current to nozzle while in bang-bang mode; 255=full current
+#define PID_MAX 210 // limits current to nozzle while PID is active (see PID_FUNCTIONAL_RANGE below); 255=full current
 #ifdef PIDTEMP
   //#define PID_DEBUG // Sends debug data to the serial port.
   //#define PID_OPENLOOP 1 // Puts PID in open loop. M104/M140 sets the output power from 0 to PID_MAX
@@ -227,9 +227,9 @@
 
 // If you are using a pre-configured hotend then you can use one of the value sets by uncommenting it
 // ATOM
-    #define  DEFAULT_Kp 8.68
-    #define  DEFAULT_Ki 1.66
-    #define  DEFAULT_Kd 11.38
+    #define  DEFAULT_Kp 20.74
+    #define  DEFAULT_Ki 3.19
+    #define  DEFAULT_Kd 33.68
 // Ultimaker
 //    #define  DEFAULT_Kp 22.2
 //    #define  DEFAULT_Ki 1.08
