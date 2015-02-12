@@ -621,71 +621,73 @@ const short temptable_11[][2] PROGMEM = {
 };
 #endif
 
-#if (THERMISTORHEATER_0 == 21) || (THERMISTORHEATER_1 == 21) || (THERMISTORHEATER_2 == 21) || (THERMISTORBED == 21)
-// 100k Termistor Chino Aliexpress MF58 // UTILIZADo por el Argento //Ultima actualizacion 24-feb-2014
-const short temptable_21[][2] PROGMEM = {
-    {     380,       300     }, // r=   112 adc=23.74
-    {     409,       295     }, // r=   120 adc=25.56
-    {     441,       290     }, // r=   130 adc=27.56
-    {     476,       285     }, // r=   141 adc=29.73
-    {     514,       280     }, // r=   152 adc=32.11
-    {     556,       275     }, // r=   165 adc=34.72
-    {     601,       270     }, // r=   179 adc=37.57
-    {     651,       265     }, // r=   195 adc=40.70
-    {     706,       260     }, // r=   212 adc=44.13
-    {     766,       255     }, // r=   231 adc=47.90
-    {     833,       250     }, // r=   252 adc=52.04
-    {     905,       245     }, // r=   275 adc=56.59
-    {     985,       240     }, // r=   301 adc=61.59
-    {    1073,       235     }, // r=   330 adc=67.09
-    {    1170,       230     }, // r=   362 adc=73.15
-    {    1277,       225     }, // r=   398 adc=79.82
-    {    1395,       220     }, // r=   438 adc=87.17
-    {    1524,       215     }, // r=   483 adc=95.25
-    {    1667,       210     }, // r=   533 adc=104.16
-    {    1823,       205     }, // r=   589 adc=113.96
-    {    1996,       200     }, // r=   653 adc=124.74
-    {    2185,       195     }, // r=   724 adc=136.59
-    {    2394,       190     }, // r=   805 adc=149.61
-    {    2622,       185     }, // r=   897 adc=163.88
-    {    2872,       180     }, // r=  1000 adc=179.50
-    {    3145,       175     }, // r=  1118 adc=196.58
-    {    3443,       170     }, // r=  1252 adc=215.18
-    {    3767,       165     }, // r=  1405 adc=235.41
-    {    4117,       160     }, // r=  1580 adc=257.32
-    {    4495,       155     }, // r=  1780 adc=280.96
-    {    4902,       150     }, // r=  2009 adc=306.36
-    {    5336,       145     }, // r=  2273 adc=333.51
-    {    5798,       140     }, // r=  2578 adc=362.36
-    {    6286,       135     }, // r=  2930 adc=392.85
-    {    6797,       130     }, // r=  3338 adc=424.83
-    {    7330,       125     }, // r=  3812 adc=458.12
-    {    7880,       120     }, // r=  4363 adc=492.50
-    {    8443,       115     }, // r=  5007 adc=527.70
-    {    9014,       110     }, // r=  5761 adc=563.39
-    {    9588,       105     }, // r=  6646 adc=599.24
-    {   10158,       100     }, // r=  7688 adc=634.87
-    {   10719,        95     }, // r=  8917 adc=669.91
-    {   11264,        90     }, // r= 10373 adc=704.01
-    {   11789,        85     }, // r= 12102 adc=736.84
-    {   12289,        80     }, // r= 14162 adc=768.09
-    {   12760,        75     }, // r= 16623 adc=797.51
-    {   13199,        70     }, // r= 19575 adc=824.93
-    {   13603,        65     }, // r= 23127 adc=850.21
-    {   13973,        60     }, // r= 27415 adc=873.28
-    {   14306,        55     }, // r= 32611 adc=894.14
-    {   14605,        50     }, // r= 38931 adc=912.80
-    {   14870,        45     }, // r= 46648 adc=929.36
-    {   15103,        40     }, // r= 56107 adc=943.93
-    {   15306,        35     }, // r= 67749 adc=956.64
-    {   15482,        30     }, // r= 82138 adc=967.63
-    {   15633,        25     }, // r=100000 adc=977.08
-    {   15762,        20     }, // r=122272 adc=985.13
-    {   15871,        15     }, // r=150172 adc=991.95
-    {   15963,        10     }, // r=185290 adc=997.69
-    {   16040,         5     }, // r=229714 adc=1002.49
-    {   16104,         0     }, // r=286200 adc=1006.47
-};
+#if (THERMISTORHEATER_0 == 13) || (THERMISTORHEATER_1 == 13) || (THERMISTORHEATER_2 == 13) || (THERMISTORBED == 13)
+// Hisens thermistor B25/50 =3950 +/-1%
+
+const short temptable_13[][2] PROGMEM = {
+ {	22.5*OVERSAMPLENR,	300	},
+{	24.125*OVERSAMPLENR,	295	},
+{	25.875*OVERSAMPLENR,	290	},
+{	27.8125*OVERSAMPLENR,	285	},
+{	29.9375*OVERSAMPLENR,	280	},
+{	32.25*OVERSAMPLENR,	275	},
+{	34.8125*OVERSAMPLENR,	270	},
+{	37.625*OVERSAMPLENR,	265	},
+{	40.6875*OVERSAMPLENR,	260	},
+{	44.0625*OVERSAMPLENR,	255	},
+{	47.75*OVERSAMPLENR,	250	},
+{	51.8125*OVERSAMPLENR,	245	},
+{	56.3125*OVERSAMPLENR,	240	},
+{	61.25*OVERSAMPLENR,	235	},
+{	66.75*OVERSAMPLENR,	230	},
+{	72.8125*OVERSAMPLENR,	225	},
+{	79.5*OVERSAMPLENR,	220	},
+{	87*OVERSAMPLENR,	215	},
+{	95.3125*OVERSAMPLENR,	210	},
+{	104.1875*OVERSAMPLENR,	205	},
+{	112.75*OVERSAMPLENR,	200	},
+{	123.125*OVERSAMPLENR,	195	},
+{	135.75*OVERSAMPLENR,	190	},
+{	148.3125*OVERSAMPLENR,	185	},
+{	163.8125*OVERSAMPLENR,	180	},
+{	179*OVERSAMPLENR,	175	},
+{	211.125*OVERSAMPLENR,	170	},
+{	216.125*OVERSAMPLENR,	165	},
+{	236.5625*OVERSAMPLENR,	160	},
+{	258.5*OVERSAMPLENR,	155	},
+{	279.875*OVERSAMPLENR,	150	},
+{	305.375*OVERSAMPLENR,	145	},
+{	333.25*OVERSAMPLENR,	140	},
+{	362.5625*OVERSAMPLENR,	135	},
+{	393.6875*OVERSAMPLENR,	130	},
+{	425*OVERSAMPLENR,	125	},
+{	460.625*OVERSAMPLENR,	120	},
+{	495.1875*OVERSAMPLENR,	115	},
+{	530.875*OVERSAMPLENR,	110	},
+{	567.25*OVERSAMPLENR,	105	},
+{	601.625*OVERSAMPLENR,	100	},
+{	637.875*OVERSAMPLENR,	95	},
+{	674.5625*OVERSAMPLENR,	90	},
+{	710*OVERSAMPLENR,	85	},
+{	744.125*OVERSAMPLENR,	80	},
+{	775.9375*OVERSAMPLENR,	75	},
+{	806.875*OVERSAMPLENR,	70	},
+{	835.1875*OVERSAMPLENR,	65	},
+{	861.125*OVERSAMPLENR,	60	},
+{	884.375*OVERSAMPLENR,	55	},
+{	904.5625*OVERSAMPLENR,	50	},
+{	923.8125*OVERSAMPLENR,	45	},
+{	940.375*OVERSAMPLENR,	40	},
+{	954.625*OVERSAMPLENR,	35	},
+{	966.875*OVERSAMPLENR,	30	},
+{	977.0625*OVERSAMPLENR,	25	},
+{	986*OVERSAMPLENR,	20	},
+{	993.375*OVERSAMPLENR,	15	},
+{	999.5*OVERSAMPLENR,	10	},
+{	1004.5*OVERSAMPLENR,	5	},
+{	1008.5*OVERSAMPLENR,	0	}
+
+ };
 #endif
 
 #if (THERMISTORHEATER_0 == 20) || (THERMISTORHEATER_1 == 20) || (THERMISTORHEATER_2 == 20) || (THERMISTORBED == 20) // PT100 with INA826 amp on Ultimaker v2.0 electronics
@@ -757,6 +759,73 @@ const short temptable_20[][2] PROGMEM = {
 {       862*OVERSAMPLENR ,       900     },
 {       917*OVERSAMPLENR ,       1000     },
 {       968*OVERSAMPLENR ,       1100     }
+};
+#endif
+
+#if (THERMISTORHEATER_0 == 21) || (THERMISTORHEATER_1 == 21) || (THERMISTORHEATER_2 == 21) || (THERMISTORBED == 21)
+// 100k Termistor Chino Aliexpress MF58 // UTILIZADo por el Argento //Ultima actualizacion 24-feb-2014
+const short temptable_21[][2] PROGMEM = {
+    {     380,       300     }, // r=   112 adc=23.74
+    {     409,       295     }, // r=   120 adc=25.56
+    {     441,       290     }, // r=   130 adc=27.56
+    {     476,       285     }, // r=   141 adc=29.73
+    {     514,       280     }, // r=   152 adc=32.11
+    {     556,       275     }, // r=   165 adc=34.72
+    {     601,       270     }, // r=   179 adc=37.57
+    {     651,       265     }, // r=   195 adc=40.70
+    {     706,       260     }, // r=   212 adc=44.13
+    {     766,       255     }, // r=   231 adc=47.90
+    {     833,       250     }, // r=   252 adc=52.04
+    {     905,       245     }, // r=   275 adc=56.59
+    {     985,       240     }, // r=   301 adc=61.59
+    {    1073,       235     }, // r=   330 adc=67.09
+    {    1170,       230     }, // r=   362 adc=73.15
+    {    1277,       225     }, // r=   398 adc=79.82
+    {    1395,       220     }, // r=   438 adc=87.17
+    {    1524,       215     }, // r=   483 adc=95.25
+    {    1667,       210     }, // r=   533 adc=104.16
+    {    1823,       205     }, // r=   589 adc=113.96
+    {    1996,       200     }, // r=   653 adc=124.74
+    {    2185,       195     }, // r=   724 adc=136.59
+    {    2394,       190     }, // r=   805 adc=149.61
+    {    2622,       185     }, // r=   897 adc=163.88
+    {    2872,       180     }, // r=  1000 adc=179.50
+    {    3145,       175     }, // r=  1118 adc=196.58
+    {    3443,       170     }, // r=  1252 adc=215.18
+    {    3767,       165     }, // r=  1405 adc=235.41
+    {    4117,       160     }, // r=  1580 adc=257.32
+    {    4495,       155     }, // r=  1780 adc=280.96
+    {    4902,       150     }, // r=  2009 adc=306.36
+    {    5336,       145     }, // r=  2273 adc=333.51
+    {    5798,       140     }, // r=  2578 adc=362.36
+    {    6286,       135     }, // r=  2930 adc=392.85
+    {    6797,       130     }, // r=  3338 adc=424.83
+    {    7330,       125     }, // r=  3812 adc=458.12
+    {    7880,       120     }, // r=  4363 adc=492.50
+    {    8443,       115     }, // r=  5007 adc=527.70
+    {    9014,       110     }, // r=  5761 adc=563.39
+    {    9588,       105     }, // r=  6646 adc=599.24
+    {   10158,       100     }, // r=  7688 adc=634.87
+    {   10719,        95     }, // r=  8917 adc=669.91
+    {   11264,        90     }, // r= 10373 adc=704.01
+    {   11789,        85     }, // r= 12102 adc=736.84
+    {   12289,        80     }, // r= 14162 adc=768.09
+    {   12760,        75     }, // r= 16623 adc=797.51
+    {   13199,        70     }, // r= 19575 adc=824.93
+    {   13603,        65     }, // r= 23127 adc=850.21
+    {   13973,        60     }, // r= 27415 adc=873.28
+    {   14306,        55     }, // r= 32611 adc=894.14
+    {   14605,        50     }, // r= 38931 adc=912.80
+    {   14870,        45     }, // r= 46648 adc=929.36
+    {   15103,        40     }, // r= 56107 adc=943.93
+    {   15306,        35     }, // r= 67749 adc=956.64
+    {   15482,        30     }, // r= 82138 adc=967.63
+    {   15633,        25     }, // r=100000 adc=977.08
+    {   15762,        20     }, // r=122272 adc=985.13
+    {   15871,        15     }, // r=150172 adc=991.95
+    {   15963,        10     }, // r=185290 adc=997.69
+    {   16040,         5     }, // r=229714 adc=1002.49
+    {   16104,         0     }, // r=286200 adc=1006.47
 };
 #endif
 
@@ -986,6 +1055,41 @@ const short temptable_60[][2] PROGMEM = {
    {991*OVERSAMPLENR, 17},
    {1001*OVERSAMPLENR, 9},
    {1008*OVERSAMPLENR, 0},
+};
+#endif
+#if (THERMISTORBED == 12) 
+//100k 0603 SMD Vishay NTCS0603E3104FXT (4.7k pullup) (calibrated for Makibox hot bed)
+const short temptable_12[][2] PROGMEM = {
+   {35*OVERSAMPLENR, 180}, //top rating 180C
+   {211*OVERSAMPLENR, 140},
+   {233*OVERSAMPLENR, 135},
+   {261*OVERSAMPLENR, 130},
+   {290*OVERSAMPLENR, 125},
+   {328*OVERSAMPLENR, 120},
+   {362*OVERSAMPLENR, 115},
+   {406*OVERSAMPLENR, 110},
+   {446*OVERSAMPLENR, 105},
+   {496*OVERSAMPLENR, 100},
+   {539*OVERSAMPLENR, 95},
+   {585*OVERSAMPLENR, 90},
+   {629*OVERSAMPLENR, 85},
+   {675*OVERSAMPLENR, 80},
+   {718*OVERSAMPLENR, 75},
+   {758*OVERSAMPLENR, 70},
+   {793*OVERSAMPLENR, 65},
+   {822*OVERSAMPLENR, 60},
+   {841*OVERSAMPLENR, 55},
+   {875*OVERSAMPLENR, 50},
+   {899*OVERSAMPLENR, 45},
+   {926*OVERSAMPLENR, 40},
+   {946*OVERSAMPLENR, 35},
+   {962*OVERSAMPLENR, 30},
+   {977*OVERSAMPLENR, 25},
+   {987*OVERSAMPLENR, 20},
+   {995*OVERSAMPLENR, 15},
+   {1001*OVERSAMPLENR, 10},
+   {1010*OVERSAMPLENR, 0},
+   {1023*OVERSAMPLENR, -40},
 };
 #endif
 
