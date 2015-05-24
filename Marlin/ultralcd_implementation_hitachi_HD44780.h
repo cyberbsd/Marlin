@@ -204,8 +204,12 @@ extern volatile uint16_t buttons;  //an extended version of the last checked but
   #else 
     #include <LiquidCrystal.h>
     #define LCD_CLASS LiquidCrystal
-  #endif  
+  #endif
+#ifdef ATOM2LCD  
+  LCD_CLASS lcd(LCD_PINS_RS, LCD_PINS_ENABLE, LCD_PINS_D0, LCD_PINS_D1,LCD_PINS_D2,LCD_PINS_D3, LCD_PINS_D4, LCD_PINS_D5,LCD_PINS_D6,LCD_PINS_D7);  //RS,Enable,D0,D1,D2,D3,D4,D5,D6,D7
+#else
   LCD_CLASS lcd(LCD_PINS_RS, LCD_PINS_ENABLE, LCD_PINS_D4, LCD_PINS_D5,LCD_PINS_D6,LCD_PINS_D7);  //RS,Enable,D4,D5,D6,D7
+#endif
 #endif
 
 /* Custom characters defined in the first 8 characters of the LCD */

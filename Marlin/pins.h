@@ -765,12 +765,22 @@
       #define LCD_PINS_D5 25
       #define LCD_PINS_D6 27
       #define LCD_PINS_D7 29
+      #ifdef ATOM2LCD //8 bits LCD
+        #define LCD_PINS_D0 59
+        #define LCD_PINS_D1 64 
+        #define LCD_PINS_D2 44 
+        #define LCD_PINS_D3 66
+      #endif
 
       #ifdef REPRAP_DISCOUNT_SMART_CONTROLLER
         #define BEEPER 37
-
-        #define BTN_EN1 31
-        #define BTN_EN2 33
+        #ifdef ATOM2LCD
+            #define BTN_EN1 33
+            #define BTN_EN2 31
+        #else
+            #define BTN_EN1 31
+            #define BTN_EN2 33
+        #endif
         #define BTN_ENC 35
 
         #define SDCARDDETECT 49

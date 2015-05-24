@@ -18,6 +18,16 @@ Configuration is for ATOM 3D printer from ALT Design
 ![](http://static.squarespace.com/static/5218ef36e4b0564f9832daf6/522df647e4b0832d81b9d967/52fa1e88e4b048c18ab7a33c/1392123531243/render(13).png?format=1000w)
 http://atom3dp.com/ 
 
+To use on ATOM 2.0 upgrade kits:
+in configuration.h uncomment
+#define ATOM2   //PID for ATOM 2.0 Release & Upgrade kits
+
+To use on ATOM 2.0 Release:
+in configuration.h uncomment
+#define ATOM2   //PID for ATOM 2.0 Release & Upgrade kits
+#define DRV8825 //stepper driver for ATOM2.0 Release
+#define ATOM2LCD //LCD for ATOM2.0 Release
+
 
 ==========================
 Marlin 3D Printer Firmware

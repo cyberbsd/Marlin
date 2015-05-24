@@ -555,6 +555,23 @@ static void lcd_preheat_abs_menu()
     END_MENU();
 }
 
+void change_filament()
+{
+    enquecommand_P((PSTR("G91")));
+    enquecommand_P((PSTR("G1 F300 E30")));
+    enquecommand_P((PSTR("G1 F3000 E-20")));
+    enquecommand_P((PSTR("G1 F5000 E-1000")));
+}
+void load_filament()
+{
+    
+    enquecommand_P((PSTR("G91")));
+    enquecommand_P((PSTR("G0 E1000 F6000")));
+    enquecommand_P((PSTR("G0 E100 F200")));
+ 
+   
+}
+
 void lcd_cooldown()
 {
     setTargetHotend0(0);
@@ -587,6 +604,8 @@ static void lcd_prepare_menu()
     MENU_ITEM(function, MSG_PREHEAT_ABS, lcd_preheat_abs0);
   #endif
 #endif
+    MENU_ITEM(function, MSG_LOAD_FILAMENT,load_filament);
+    MENU_ITEM(function, MSG_CHANGE_FILAMENT,change_filament);
     MENU_ITEM(function, MSG_COOLDOWN, lcd_cooldown);
 #if PS_ON_PIN > -1
     if (powersupply)
