@@ -149,8 +149,9 @@
 // 1010 is Pt1000 with 1k pullup (non standard)
 // 147 is Pt100 with 4k7 pullup
 // 110 is Pt100 with 1k pullup (non standard)
+// 99 is 100k B3950 MF58 ATOM Version
 
-#define TEMP_SENSOR_0 11 //21 for test
+#define TEMP_SENSOR_0 99
 #define TEMP_SENSOR_1 0
 #define TEMP_SENSOR_2 0
 #define TEMP_SENSOR_BED 0
@@ -221,9 +222,9 @@
     #define  DEFAULT_Kd 33.68
 #endif
 // Ultimaker
-//    #define  DEFAULT_Kp 22.2
-//    #define  DEFAULT_Ki 1.08
-//    #define  DEFAULT_Kd 114
+//    #define  DEFAULT_Kp 16.54
+//    #define  DEFAULT_Ki 1.3
+//    #define  DEFAULT_Kd 52.56
 
 // MakerGear
 //    #define  DEFAULT_Kp 7.0
