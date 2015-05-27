@@ -176,7 +176,7 @@
 // When temperature exceeds max temp, your heater will be switched off.
 // This feature exists to protect your hotend from overheating accidentally, but *NOT* from thermistor short/failure!
 // You should use MINTEMP for thermistor short/failure protection.
-#define HEATER_0_MAXTEMP 250
+#define HEATER_0_MAXTEMP 260
 #define HEATER_1_MAXTEMP 275
 #define HEATER_2_MAXTEMP 275
 #define BED_MAXTEMP 150
@@ -490,7 +490,7 @@ const bool Z_MAX_ENDSTOP_INVERTING = false; // set to true to invert the logic o
 //If you have enabled the Bed Auto Leveling and are using the same Z Probe for Z Homing,
 //it is highly recommended you let this Z_SAFE_HOMING enabled!!!
 
-  #define Z_SAFE_HOMING   // This feature is meant to avoid Z homing with probe outside the bed area.
+  //#define Z_SAFE_HOMING   // This feature is meant to avoid Z homing with probe outside the bed area.
                           // When defined, it will:
                           // - Allow Z homing only after X and Y homing AND stepper drivers still enabled
                           // - If stepper drivers timeout, it will need X and Y homing again before Z homing
@@ -540,8 +540,8 @@ const bool Z_MAX_ENDSTOP_INVERTING = false; // set to true to invert the logic o
 #endif
 //#define DEFAULT_MAX_FEEDRATE          {200, 200, 200, 200}    // (mm/sec)
 //#define DEFAULT_MAX_ACCELERATION      {9000,9000,9000,9000}    // X, Y, Z, E maximum start speed for accelerated moves. E default values are good for skeinforge 40+, for older versions raise them a lot.
-#define DEFAULT_MAX_FEEDRATE          {300, 300, 300, 300}    // (mm/sec)
-#define DEFAULT_MAX_ACCELERATION      {4500,4500,4500,10000}    // X, Y, Z, E maximum start speed for accelerated moves. E default values are good for skeinforge 40+, for older versions raise them a lot.
+#define DEFAULT_MAX_FEEDRATE          {150, 150, 150, 300}    // (mm/sec)
+#define DEFAULT_MAX_ACCELERATION      {3000,3000,3000,10000}    // X, Y, Z, E maximum start speed for accelerated moves. E default values are good for skeinforge 40+, for older versions raise them a lot.
 
 #define DEFAULT_ACCELERATION          3000    // X, Y, Z and E max acceleration in mm/s^2 for printing moves
 #define DEFAULT_RETRACT_ACCELERATION  9000   // X, Y, Z and E max acceleration in mm/s^2 for retracts
