@@ -1543,7 +1543,9 @@ void process_commands()
 #endif //ENABLE_AUTO_BED_LEVELING
 
 #ifdef NONLINEAR_BED_LEVELING
+#ifndef ATOM2 //ATOM2 or 1.99 official don't clear bed level on G28
       reset_bed_level();
+#endif
 #endif //NONLINEAR_BED_LEVELING
 
       saved_feedrate = feedrate;
