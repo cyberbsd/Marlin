@@ -71,7 +71,7 @@
 #define ATOM
 #define ATOM2   //PID for ATOM 2.0 Release & Upgrade kits
 #define DRV8825 //stepper driver for ATOM2.0 Release
-#define ATOM2LCD //LCD for ATOM2.0 Release
+//#define ATOM2LCD //LCD for ATOM2.0 Release
 #define ATOM_LASER //ATOM Laser engraver support
 // Make delta curves from many straight lines (linear interpolation).
 // This is a trade-off between visible corners (not enough segments)

@@ -15,6 +15,7 @@
 #define MSG_AUTOSTART                       "Autostart"
 #define MSG_DISABLE_STEPPERS                "Stepper abschalt."
 #define MSG_AUTO_HOME                       "Auto Nullpunkt"
+#define MSG_AUTO_LEVEL                      "Auto Level"
 #define MSG_SET_HOME_OFFSETS                "Set home offsets"
 #define MSG_SET_ORIGIN                      "Setze Nullpunkt"
 #define MSG_PREHEAT_PLA                     "Vorwärmen PLA"

@@ -15,6 +15,7 @@
 #define MSG_AUTOSTART                       "Autostart"
 #define MSG_DISABLE_STEPPERS                "Disabilita Motori"
 #define MSG_AUTO_HOME                       "Auto Home"
+#define MSG_AUTO_LEVEL                      "Auto Level"
 #define MSG_SET_HOME_OFFSETS                "Set home offsets"
 #define MSG_SET_ORIGIN                      "Imposta Origine"
 #define MSG_PREHEAT_PLA                     "Preriscalda PLA"
