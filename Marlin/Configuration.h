@@ -69,9 +69,10 @@
 // Enable DELTA kinematics
 #define DELTA
 #define ATOM
-//#define ATOM2   //PID for ATOM 2.0 Release & Upgrade kits
-//#define DRV8825 //stepper driver for ATOM2.0 Release
-//#define ATOM2LCD //LCD for ATOM2.0 Release
+#define ATOM2   //PID for ATOM 2.0 Release & Upgrade kits
+#define DRV8825 //stepper driver for ATOM2.0 Release
+#define ATOM2LCD //LCD for ATOM2.0 Release
+#define ATOM_LASER //ATOM Laser engraver support
 // Make delta curves from many straight lines (linear interpolation).
 // This is a trade-off between visible corners (not enough segments)
 // and processor overload (too many expensive sqrt calls).
@@ -401,7 +402,7 @@ const bool Z_MAX_ENDSTOP_INVERTING = false; // set to true to invert the logic o
 #define Y_MAX_POS DELTA_PRINTABLE_RADIUS
 #define Y_MIN_POS -DELTA_PRINTABLE_RADIUS
 #define Z_MAX_POS MANUAL_Z_HOME_POS
-#define Z_MIN_POS 0
+#define Z_MIN_POS -1
 
 #define X_MAX_LENGTH (X_MAX_POS - X_MIN_POS)
 #define Y_MAX_LENGTH (Y_MAX_POS - Y_MIN_POS)
@@ -514,12 +515,12 @@ const bool Z_MAX_ENDSTOP_INVERTING = false; // set to true to invert the logic o
 // For deltabots this means top and center of the Cartesian print volume.
 #define MANUAL_X_HOME_POS 0
 #define MANUAL_Y_HOME_POS 0
-#define MANUAL_Z_HOME_POS 360  // For delta: Distance between nozzle and print surface after homing.
+#define MANUAL_Z_HOME_POS 350  // For delta: Distance between nozzle and print surface after homing.
 
 //// MOVEMENT SETTINGS
 #define NUM_AXIS 4 // The axis order in all axis related arrays is X, Y, Z, E
 //#define HOMING_FEEDRATE {160*60, 160*60, 160*60, 0}  // set the homing speeds (mm/min)
-#define HOMING_FEEDRATE {100*60, 100*60, 100*60, 0}  // set the homing speeds (mm/min)
+#define HOMING_FEEDRATE {50*60, 50*60, 50*60, 0}  // set the homing speeds (mm/min)
 
 // default settings
 

@@ -233,6 +233,7 @@ float min_pos[3] = { X_MIN_POS, Y_MIN_POS, Z_MIN_POS };
 float max_pos[3] = { X_MAX_POS, Y_MAX_POS, Z_MAX_POS };
 bool axis_known_position[3] = {false, false, false};
 float zprobe_zoffset;
+float run_time = 0;
 
 // Extruder offset
 #if EXTRUDERS > 1
@@ -468,6 +469,14 @@ void setup_killpin()
   #endif
 }
 
+void setup_laserpin() 
+{ 
+   #if defined(LASER_PIN) && LASER_PIN > -1
+    SET_OUTPUT(LASER_PIN); 
+    WRITE(LASER_PIN, LOW); 
+  #endif 
+}
+
 void setup_photpin()
 {
   #if defined(PHOTOGRAPH_PIN) && PHOTOGRAPH_PIN > -1
@@ -583,6 +592,7 @@ void setup()
   watchdog_init();
   st_init();    // Initialize stepper, this enables interrupts!
   setup_photpin();
+  setup_laserpin();
   servo_init();
   
 
@@ -1035,7 +1045,7 @@ static void run_z_probe() {
     long start_steps = st_get_position(Z_AXIS);
 
     feedrate = homing_feedrate[Z_AXIS]/10;
-    destination[Z_AXIS] = -10;
+    destination[Z_AXIS] = -15;
     prepare_move_raw();
     st_synchronize();
     endstops_hit_on_purpose();
@@ -2076,6 +2086,25 @@ void process_commands()
         LCD_MESSAGEPGM(WELCOME_MSG);
     }
     break;
+#endif
+#ifdef ATOM_LASER
+   case 03:
+        if((run_time*1000)>500)
+          delay(500);          
+        else
+          delay(run_time*1000);
+        if(code_seen('T'))
+           analogWrite(LASER_PIN,code_value());
+        else
+           analogWrite(LASER_PIN,255);
+        break;
+   case 05:
+        if((run_time*1000)>500)
+          delay(500);          
+        else
+          delay(run_time*1000);
+        analogWrite(LASER_PIN,0);
+       break;
 #endif
     case 17:
         LCD_MESSAGEPGM(MSG_NO_MOVE);
@@ -4166,10 +4195,10 @@ void adjust_delta(float cartesian[3])
   int floor_y = floor(grid_y);
   float ratio_x = grid_x - floor_x;
   float ratio_y = grid_y - floor_y;
-  float z1 = bed_level[floor_x+half][floor_y+half];
-  float z2 = bed_level[floor_x+half][floor_y+half+1];
-  float z3 = bed_level[floor_x+half+1][floor_y+half];
-  float z4 = bed_level[floor_x+half+1][floor_y+half+1];
+  float z1 = bed_level[floor_x+half][floor_y+half] + zprobe_zoffset;
+  float z2 = bed_level[floor_x+half][floor_y+half+1] + zprobe_zoffset;
+  float z3 = bed_level[floor_x+half+1][floor_y+half] + zprobe_zoffset;
+  float z4 = bed_level[floor_x+half+1][floor_y+half+1] + zprobe_zoffset;
   float left = (1-ratio_y)*z1 + ratio_y*z2;
   float right = (1-ratio_y)*z3 + ratio_y*z4;
   float offset = (1-ratio_x)*left + ratio_x*right;
@@ -4262,6 +4291,7 @@ for (int s = 1; s <= steps; s++) {
   if (cartesian_mm < 0.000001) { cartesian_mm = abs(difference[E_AXIS]); }
   if (cartesian_mm < 0.000001) { return; }
   float seconds = 6000 * cartesian_mm / feedrate / feedmultiply;
+  run_time = seconds;
   int steps = max(1, int(delta_segments_per_second * seconds));
   // SERIAL_ECHOPGM("mm="); SERIAL_ECHO(cartesian_mm);
   // SERIAL_ECHOPGM(" seconds="); SERIAL_ECHO(seconds);

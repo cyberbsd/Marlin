@@ -596,8 +596,9 @@
     #define X_STEP_PIN         54
     #define X_DIR_PIN          55
     #define X_ENABLE_PIN       38
-    #define X_MIN_PIN           3
+    #define X_MIN_PIN          -1// 3
     #define X_MAX_PIN           2
+    #define LASER_PIN           3
 
     #define Y_STEP_PIN         60
     #define Y_DIR_PIN          61
