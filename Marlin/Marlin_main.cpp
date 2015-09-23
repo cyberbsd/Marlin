@@ -1266,7 +1266,7 @@ static void extrapolate_unprobed_bed_level() {
 }
 
 // Print calibration results for plotting or manual frame adjustment.
-static void print_bed_level() {
+void print_bed_level() {
   for (int y = 0; y < AUTO_BED_LEVELING_GRID_POINTS; y++) {
     for (int x = 0; x < AUTO_BED_LEVELING_GRID_POINTS; x++) {
       SERIAL_PROTOCOL_F(bed_level[x][y], 2);
@@ -1277,7 +1277,7 @@ static void print_bed_level() {
 }
 
 // Reset calibration results to zero.
-static void reset_bed_level() {
+void reset_bed_level() {
   for (int y = 0; y < AUTO_BED_LEVELING_GRID_POINTS; y++) {
     for (int x = 0; x < AUTO_BED_LEVELING_GRID_POINTS; x++) {
       bed_level[x][y] = 0.0;
@@ -3682,7 +3682,7 @@ case 404:  //M404 Enter the nominal filament width (3mm, 1.75mm ) N<3.0> or disp
         value = code_value();
         if ((Z_PROBE_OFFSET_RANGE_MIN <= value) && (value <= Z_PROBE_OFFSET_RANGE_MAX))
         {
-          zprobe_zoffset = -value; // compare w/ line 278 of ConfigurationStore.cpp
+          zprobe_zoffset = value; // compare w/ line 278 of ConfigurationStore.cpp
           SERIAL_ECHO_START;
           SERIAL_ECHOLNPGM(MSG_ZPROBE_ZOFFSET " " MSG_OK);
           SERIAL_PROTOCOLLN("");
@@ -3702,7 +3702,7 @@ case 404:  //M404 Enter the nominal filament width (3mm, 1.75mm ) N<3.0> or disp
       {
           SERIAL_ECHO_START;
           SERIAL_ECHOLNPGM(MSG_ZPROBE_ZOFFSET " : ");
-          SERIAL_ECHO(-zprobe_zoffset);
+          SERIAL_ECHO(zprobe_zoffset);
           SERIAL_PROTOCOLLN("");
       }
       break;

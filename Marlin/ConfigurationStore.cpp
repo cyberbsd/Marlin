@@ -41,12 +41,16 @@ void _EEPROM_readData(int &pos, uint8_t* value, uint8_t size)
 #define EEPROM_VERSION "V10"
 #ifdef DELTA
 	#undef EEPROM_VERSION
-	#define EEPROM_VERSION "V11"
+	#define EEPROM_VERSION "V13"
 #endif
 #ifdef SCARA
 	#undef EEPROM_VERSION
 	#define EEPROM_VERSION "V12"
 #endif
+
+extern float bed_level[AUTO_BED_LEVELING_GRID_POINTS][AUTO_BED_LEVELING_GRID_POINTS];
+extern void reset_bed_level();
+extern void print_bed_level();
 
 #ifdef EEPROM_SETTINGS
 void Config_StoreSettings() 
@@ -101,6 +105,9 @@ void Config_StoreSettings()
   #ifdef SCARA
   EEPROM_WRITE_VAR(i,axis_scaling);        // Add scaling for SCARA
   #endif
+#ifdef SAVE_G29_CORRECTION_MATRIX
+  EEPROM_WRITE_VAR(i,bed_level);
+#endif
   char ver2[4]=EEPROM_VERSION;
   i=EEPROM_OFFSET;
   EEPROM_WRITE_VAR(i,ver2); // validate data
@@ -122,6 +129,12 @@ void Config_PrintSettings()
     SERIAL_ECHOPAIR(" E",axis_steps_per_unit[E_AXIS]);
     SERIAL_ECHOLN("");
       
+#ifdef SAVE_G29_CORRECTION_MATRIX
+	SERIAL_ECHO_START;
+ 	SERIAL_ECHOLNPGM("Bed Level Matrix :");
+    print_bed_level();
+    SERIAL_ECHOLN("");
+#endif
     SERIAL_ECHO_START;
 #ifdef SCARA
 SERIAL_ECHOLNPGM("Scaling factors:");
@@ -188,6 +201,10 @@ SERIAL_ECHOLNPGM("Scaling factors:");
 	SERIAL_ECHOPAIR("  M665 L",delta_diagonal_rod );
 	SERIAL_ECHOPAIR(" R" ,delta_radius );
 	SERIAL_ECHOPAIR(" S" ,delta_segments_per_second );
+	SERIAL_ECHOLN("");
+	SERIAL_ECHO_START;
+    SERIAL_ECHOLNPGM("Z min probe offset");
+	SERIAL_ECHOPAIR("  M851 Z",zprobe_zoffset );
 	SERIAL_ECHOLN("");
 #endif
 #ifdef PIDTEMP
@@ -258,6 +275,9 @@ void Config_RetrieveSettings()
         int lcd_contrast;
         #endif
         EEPROM_READ_VAR(i,lcd_contrast);
+#ifdef SAVE_G29_CORRECTION_MATRIX
+        EEPROM_READ_VAR(i,bed_level);
+#endif
 		#ifdef SCARA
 		EEPROM_READ_VAR(i,axis_scaling);
 		#endif
@@ -282,6 +302,11 @@ void Config_ResetDefault()
     float tmp1[]=DEFAULT_AXIS_STEPS_PER_UNIT;
     float tmp2[]=DEFAULT_MAX_FEEDRATE;
     long tmp3[]=DEFAULT_MAX_ACCELERATION;
+
+#ifdef SAVE_G29_CORRECTION_MATRIX
+    reset_bed_level();
+#endif
+
     for (short i=0;i<4;i++) 
     {
         axis_steps_per_unit[i]=tmp1[i];  
@@ -320,7 +345,7 @@ void Config_ResetDefault()
     absPreheatFanSpeed = ABS_PREHEAT_FAN_SPEED;
 #endif
 #ifdef ENABLE_AUTO_BED_LEVELING
-    zprobe_zoffset = -Z_PROBE_OFFSET_FROM_EXTRUDER;
+    zprobe_zoffset = Z_PROBE_OFFSET_FROM_EXTRUDER;
 #endif
 #ifdef DOGLCD
     lcd_contrast = DEFAULT_LCD_CONTRAST;
