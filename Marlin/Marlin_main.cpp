@@ -1175,7 +1175,9 @@ static void retract_z_probe() {
 #endif
     }
     #else // Push up the Z probe by moving the end effector, no servo needed.
-#ifndef ATOM //Not necessary for ATOM
+#ifdef ATOM 
+    do_blocking_move_to(current_position[X_AXIS], current_position[Y_AXIS], current_position[Z_AXIS] + Z_RAISE_BETWEEN_PROBINGS);
+#else //Not necessary for ATOM
     feedrate = homing_feedrate[X_AXIS];
     destination[Z_AXIS] = current_position[Z_AXIS] + 20;
     prepare_move_raw();
