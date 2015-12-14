@@ -2091,6 +2091,7 @@ void process_commands()
 #endif
 #ifdef ATOM_LASER
    case 03:
+        st_synchronize();
         if((run_time*1000)>500)
           delay(500);          
         else
@@ -2101,6 +2102,7 @@ void process_commands()
            analogWrite(LASER_PIN,255);
         break;
    case 05:
+        st_synchronize();
         if((run_time*1000)>500)
           delay(500);          
         else
