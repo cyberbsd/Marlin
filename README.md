@@ -1,3 +1,30 @@
+==========================
+ATOM 3D Printer Marlin Firmware
+==========================
+Fork from Johann's Marlin fw deltabot branch.
+
+Configuration is for ATOM 3D printer from ALT Design
+![](http://static.squarespace.com/static/5218ef36e4b0564f9832daf6/522df647e4b0832d81b9d967/52fa1e88e4b048c18ab7a33c/1392123531243/render(13).png?format=1000w)
+http://atom3dp.com/ 
+
+## To use on ATOM 2.0 Release:
+default settin already for ATOM2.0, nothing need to change
+
+## To use on ATOM 1.99 (2.0 upgrade kits):
+in configuration.h comment
+```
+//#define DRV8825 //default stepper driver for ATOM2.0 Release
+//#define ATOM2LCD //LCD for ATOM2.0 Release
+```
+
+## To use on ATOM 1.x Release:
+in configuration.h comment
+```
+//#define ATOM2   //PID for ATOM 2.0 Release & Upgrade kits
+//#define DRV8825 //default stepper driver for ATOM2.0 Release
+//#define ATOM2LCD //LCD for ATOM2.0 Release
+```
+
 Developer Notes
 ===================
 
@@ -8,26 +35,6 @@ Developer Notes
 - Before you submit any pull request, we ask that you _PLEASE_ test your code before submission, even if the change seems innocuous. When creating the pull request, please include the hardware you used for testing and a short synopsis of your testing procedure. Untested pull requests are less likely to be merged, as even slight changes create the risk of breaking the main branch.
 
 - If you have a fix don't open an issue telling about it, but test the code and submit a pull request. Use the __development__ branch when you submit, current its not the default one so please check that you submit to the __development__ branch
-
-==========================
-ATOM 3D Printer Marlin Firmware
-==========================
-Fork from Johann's Marlin fw deltabot branch.
-
-Configuration is for ATOM 3D printer from ALT Design
-![](http://static.squarespace.com/static/5218ef36e4b0564f9832daf6/522df647e4b0832d81b9d967/52fa1e88e4b048c18ab7a33c/1392123531243/render(13).png?format=1000w)
-http://atom3dp.com/ 
-
-To use on ATOM 2.0 upgrade kits:
-in configuration.h uncomment
-#define ATOM2   //PID for ATOM 2.0 Release & Upgrade kits
-
-To use on ATOM 2.0 Release:
-in configuration.h uncomment
-#define ATOM2   //PID for ATOM 2.0 Release & Upgrade kits
-#define DRV8825 //stepper driver for ATOM2.0 Release
-#define ATOM2LCD //LCD for ATOM2.0 Release
-
 
 ==========================
 Marlin 3D Printer Firmware
