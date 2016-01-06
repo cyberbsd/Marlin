@@ -48,9 +48,11 @@ void _EEPROM_readData(int &pos, uint8_t* value, uint8_t size)
 	#define EEPROM_VERSION "V12"
 #endif
 
+#ifdef ENABLE_AUTO_BED_LEVELING
 extern float bed_level[AUTO_BED_LEVELING_GRID_POINTS][AUTO_BED_LEVELING_GRID_POINTS];
 extern void reset_bed_level();
 extern void print_bed_level();
+#endif
 
 #ifdef EEPROM_SETTINGS
 void Config_StoreSettings() 

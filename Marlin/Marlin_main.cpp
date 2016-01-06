@@ -2101,6 +2101,9 @@ void process_commands()
         else
            analogWrite(LASER_PIN,255);
         break;
+   case 04:
+       analogWrite(LASER_PIN,8);
+       break;
    case 05:
         st_synchronize();
         if((run_time*1000)>500)
@@ -4189,6 +4192,7 @@ void calculate_delta(float cartesian[3])
   */
 }
 
+#ifdef ENABLE_AUTO_BED_LEVELING
 // Adjust print surface height by linear interpolation over the bed_level array.
 void adjust_delta(float cartesian[3])
 {
@@ -4227,6 +4231,7 @@ void adjust_delta(float cartesian[3])
   SERIAL_ECHOPGM(" offset="); SERIAL_ECHOLN(offset);
   */
 }
+#endif
 
 void prepare_move_raw()
 {
