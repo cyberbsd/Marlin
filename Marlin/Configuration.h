@@ -35,6 +35,12 @@
 // This determines the communication speed of the printer
 #define BAUDRATE 250000
 
+// FLASH_AIR_WIFI must be defined if a Toshiba FlashAir card's WiFi is used.
+// The FlashAir card will broadcast approx 6 seconds after Mounting.
+// If a WiFi link is not established within 1 minute the FlashAir's WiFi will
+// hibernate (must re-Mount card to retry WiFi linking).
+#define FLASH_AIR_WIFI // Uncomment this if Toshiba FlashAir WiFi is used.
+
 // This enables the serial port associated to the Bluetooth interface
 //#define BTENABLED              // Enable BT interface on AT90USB devices
 
