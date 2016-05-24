@@ -277,13 +277,12 @@ void Config_RetrieveSettings()
         int lcd_contrast;
         #endif
         EEPROM_READ_VAR(i,lcd_contrast);
-#ifdef SAVE_G29_CORRECTION_MATRIX
-        EEPROM_READ_VAR(i,bed_level);
-#endif
 		#ifdef SCARA
 		EEPROM_READ_VAR(i,axis_scaling);
 		#endif
-
+#ifdef SAVE_G29_CORRECTION_MATRIX
+        EEPROM_READ_VAR(i,bed_level);
+#endif
 		// Call updatePID (similar to when we have processed M301)
 		updatePID();
         SERIAL_ECHO_START;
