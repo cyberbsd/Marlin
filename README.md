@@ -93,6 +93,7 @@ Features:
 *   RC Servo Support, specify angle or duration for continuous rotation servos.
 *   Bed Auto Leveling.
 *   Support for a filament diameter sensor, which adjusts extrusion volume
+*   Support Toshiba FlashAir
 
 The default baudrate is 250000. This baudrate has less jitter and hence errors than the usual 115200 baud, but is less supported by drivers and host-environments.
 
@@ -283,6 +284,8 @@ M Codes
 *  M503 - print the current settings (from memory not from eeprom)
 *  M540 - Use S[0|1] to enable or disable the stop SD card print on endstop hit (requires ABORT_ON_ENDSTOP_HIT_FEATURE_ENABLED)
 *  M600 - Pause for filament change X[pos] Y[pos] Z[relative lift] E[initial retract] L[later retract distance for removal]
+*  M665 - Set delta configuration L=delta_diagonal_rod, R=delta_radius, S=delta_segments_per_second
+*  M666 - Set delta endstop adjustment, only negative support (X,Y,Z)
 *  M907 - Set digital trimpot motor current using axis codes.
 *  M908 - Control digital trimpot directly.
 *  M350 - Set microstepping mode.
