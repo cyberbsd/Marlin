@@ -41,7 +41,7 @@ void _EEPROM_readData(int &pos, uint8_t* value, uint8_t size)
 #define EEPROM_VERSION "V10"
 #ifdef DELTA
 	#undef EEPROM_VERSION
-	#define EEPROM_VERSION "V13"
+	#define EEPROM_VERSION "V14"
 #endif
 #ifdef SCARA
 	#undef EEPROM_VERSION
@@ -77,6 +77,7 @@ void Config_StoreSettings()
   EEPROM_WRITE_VAR(i,delta_radius);
   EEPROM_WRITE_VAR(i,delta_diagonal_rod);
   EEPROM_WRITE_VAR(i,delta_segments_per_second);
+  EEPROM_WRITE_VAR(i,max_pos);
   #endif
   #ifndef ULTIPANEL
   int plaPreheatHotendTemp = PLA_PREHEAT_HOTEND_TEMP, plaPreheatHPBTemp = PLA_PREHEAT_HPB_TEMP, plaPreheatFanSpeed = PLA_PREHEAT_FAN_SPEED;
@@ -198,11 +199,12 @@ SERIAL_ECHOLNPGM("Scaling factors:");
     SERIAL_ECHOPAIR(" Z" ,endstop_adj[Z_AXIS] );
 	SERIAL_ECHOLN("");
 	SERIAL_ECHO_START;
-	SERIAL_ECHOLNPGM("Delta settings: L=delta_diagonal_rod, R=delta_radius, S=delta_segments_per_second");
+	SERIAL_ECHOLNPGM("Delta settings: L=delta_diagonal_rod, R=delta_radius, S=delta_segments_per_second, Z=Max Z home position");
 	SERIAL_ECHO_START;
 	SERIAL_ECHOPAIR("  M665 L",delta_diagonal_rod );
 	SERIAL_ECHOPAIR(" R" ,delta_radius );
 	SERIAL_ECHOPAIR(" S" ,delta_segments_per_second );
+	SERIAL_ECHOPAIR(" Z" ,max_pos[2] );
 	SERIAL_ECHOLN("");
 	SERIAL_ECHO_START;
     SERIAL_ECHOLNPGM("Z min probe offset");
@@ -254,6 +256,8 @@ void Config_RetrieveSettings()
 		EEPROM_READ_VAR(i,delta_radius);
 		EEPROM_READ_VAR(i,delta_diagonal_rod);
 		EEPROM_READ_VAR(i,delta_segments_per_second);
+		EEPROM_READ_VAR(i,max_pos);
+		recalc_delta_settings(delta_radius, delta_diagonal_rod);
         #endif
         #ifndef ULTIPANEL
         int plaPreheatHotendTemp, plaPreheatHPBTemp, plaPreheatFanSpeed;
@@ -335,6 +339,7 @@ void Config_ResetDefault()
 	delta_radius= DELTA_RADIUS;
 	delta_diagonal_rod= DELTA_DIAGONAL_ROD;
 	delta_segments_per_second= DELTA_SEGMENTS_PER_SECOND;
+	max_pos[2] = MANUAL_Z_HOME_POS;
 	recalc_delta_settings(delta_radius, delta_diagonal_rod);
 #endif
 #ifdef ULTIPANEL

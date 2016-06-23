@@ -479,7 +479,10 @@ static void lcd_implementation_status_screen()
 # endif//LCD_WIDTH > 19
     lcd.setCursor(LCD_WIDTH - 8, 1);
     lcd.print('Z');
-    lcd.print(ftostr32(current_position[Z_AXIS] + 0.00001));
+	if(current_position[Z_AXIS] < 0)
+		lcd.print(ftostr32(current_position[Z_AXIS] - 0.00001));
+	else
+		lcd.print(ftostr32(current_position[Z_AXIS] + 0.00001));
 #endif//LCD_HEIGHT > 2
 
 #if LCD_HEIGHT > 3

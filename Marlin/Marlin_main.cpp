@@ -227,6 +227,9 @@ float current_position[NUM_AXIS] = { 0.0, 0.0, 0.0, 0.0 };
 float add_homing[3]={0,0,0};
 #ifdef DELTA
 float endstop_adj[3]={0,0,0};
+float base_max_pos_a[3] = {X_MAX_POS, Y_MAX_POS, Z_MAX_POS};
+float base_home_pos_a[3] = {X_HOME_POS, Y_HOME_POS, Z_HOME_POS};
+float max_length_a[3] = {X_MAX_LENGTH, Y_MAX_LENGTH, Z_MAX_LENGTH};
 #endif
 
 float min_pos[3] = { X_MIN_POS, Y_MIN_POS, Z_MIN_POS };
@@ -861,11 +864,19 @@ static inline type array(int axis)          \
     { return pgm_read_any(&array##_P[axis]); }
 
 XYZ_CONSTS_FROM_CONFIG(float, base_min_pos,    MIN_POS);
-XYZ_CONSTS_FROM_CONFIG(float, base_max_pos,    MAX_POS);
-XYZ_CONSTS_FROM_CONFIG(float, base_home_pos,   HOME_POS);
-XYZ_CONSTS_FROM_CONFIG(float, max_length,      MAX_LENGTH);
+//XYZ_CONSTS_FROM_CONFIG(float, base_max_pos,    MAX_POS);
+//XYZ_CONSTS_FROM_CONFIG(float, base_home_pos,   HOME_POS);
+//XYZ_CONSTS_FROM_CONFIG(float, max_length,      MAX_LENGTH);
 XYZ_CONSTS_FROM_CONFIG(float, home_retract_mm, HOME_RETRACT_MM);
 XYZ_CONSTS_FROM_CONFIG(signed char, home_dir,  HOME_DIR);
+
+#define DELTA_VAR_FROM_ARRAY(array) \
+static inline float array(int axis)          \
+    { return array##_a[axis]; }
+
+DELTA_VAR_FROM_ARRAY(base_max_pos);
+DELTA_VAR_FROM_ARRAY(base_home_pos);
+DELTA_VAR_FROM_ARRAY(max_length);
 
 #ifdef DUAL_X_CARRIAGE
   #if EXTRUDERS == 1 || defined(COREXY) \
@@ -1585,7 +1596,8 @@ void process_commands()
           destination[X_AXIS] = 3 * Z_MAX_LENGTH;
           destination[Y_AXIS] = 3 * Z_MAX_LENGTH;
           destination[Z_AXIS] = 3 * Z_MAX_LENGTH;
-          feedrate = 1.732 * homing_feedrate[X_AXIS];
+          //feedrate = 1.732 * homing_feedrate[X_AXIS];
+		  feedrate = homing_feedrate[Z_AXIS];
           plan_buffer_line(destination[X_AXIS], destination[Y_AXIS], destination[Z_AXIS], destination[E_AXIS], feedrate/60, active_extruder);
           st_synchronize();
           endstops_hit_on_purpose();
@@ -3104,6 +3116,9 @@ Sigma_Exit:
 		if(code_seen('S')) {
 			delta_segments_per_second= code_value();
 		}
+		if(code_seen('Z')) {
+			max_pos[2] = code_value();
+		}
 		
 		recalc_delta_settings(delta_radius, delta_diagonal_rod);
 		break;
@@ -3719,78 +3734,84 @@ case 404:  //M404 Enter the nominal filament width (3mm, 1.75mm ) N<3.0> or disp
     #ifdef FILAMENTCHANGEENABLE
     case 600: //Pause for filament change X[pos] Y[pos] Z[relative lift] E[initial retract] L[later retract distance for removal]
     {
-        float target[4];
+        
         float lastpos[4];
-        target[X_AXIS]=current_position[X_AXIS];
-        target[Y_AXIS]=current_position[Y_AXIS];
-        target[Z_AXIS]=current_position[Z_AXIS];
-        target[E_AXIS]=current_position[E_AXIS];
-        lastpos[X_AXIS]=current_position[X_AXIS];
-        lastpos[Y_AXIS]=current_position[Y_AXIS];
-        lastpos[Z_AXIS]=current_position[Z_AXIS];
-        lastpos[E_AXIS]=current_position[E_AXIS];
+		 #ifdef DELTA
+			 float fr60 = feedrate / 60;
+		 #endif
+		 for (int i = 0; i < NUM_AXIS; i++)
+			lastpos[i] = destination[i] = current_position[i];
+		#ifdef DELTA
+			#define RUNPLAN calculate_delta(destination); \
+                      plan_buffer_line(delta[X_AXIS], delta[Y_AXIS], delta[Z_AXIS], destination[E_AXIS], fr60, active_extruder);
+		#else
+			#define RUNPLAN plan_buffer_line(destination[X_AXIS], destination[Y_AXIS], destination[Z_AXIS], destination[E_AXIS], feedrate/60, active_extruder);
+		#endif
         //retract by E
         if(code_seen('E'))
         {
-          target[E_AXIS]+= code_value();
+          destination[E_AXIS]+= code_value();
         }
         else
         {
           #ifdef FILAMENTCHANGE_FIRSTRETRACT
-            target[E_AXIS]+= FILAMENTCHANGE_FIRSTRETRACT ;
+            destination[E_AXIS]+= FILAMENTCHANGE_FIRSTRETRACT ;
           #endif
         }
-        plan_buffer_line(target[X_AXIS], target[Y_AXIS], target[Z_AXIS], target[E_AXIS], feedrate/60, active_extruder);
+#ifndef DELTA 
+		 RUNPLAN;
+#endif
 
         //lift Z
         if(code_seen('Z'))
         {
-          target[Z_AXIS]+= code_value();
+          destination[Z_AXIS]+= code_value();
         }
         else
         {
           #ifdef FILAMENTCHANGE_ZADD
-            target[Z_AXIS]+= FILAMENTCHANGE_ZADD ;
+            destination[Z_AXIS]+= FILAMENTCHANGE_ZADD ;
           #endif
         }
-        plan_buffer_line(target[X_AXIS], target[Y_AXIS], target[Z_AXIS], target[E_AXIS], feedrate/60, active_extruder);
+#ifndef DELTA 
+		 RUNPLAN;
+#endif
 
         //move xy
         if(code_seen('X'))
         {
-          target[X_AXIS]+= code_value();
+          destination[X_AXIS]+= code_value();
         }
         else
         {
           #ifdef FILAMENTCHANGE_XPOS
-            target[X_AXIS]= FILAMENTCHANGE_XPOS ;
+            destination[X_AXIS]= FILAMENTCHANGE_XPOS ;
           #endif
         }
         if(code_seen('Y'))
         {
-          target[Y_AXIS]= code_value();
+          destination[Y_AXIS]= code_value();
         }
         else
         {
           #ifdef FILAMENTCHANGE_YPOS
-            target[Y_AXIS]= FILAMENTCHANGE_YPOS ;
+            destination[Y_AXIS]= FILAMENTCHANGE_YPOS ;
           #endif
         }
-
-        plan_buffer_line(target[X_AXIS], target[Y_AXIS], target[Z_AXIS], target[E_AXIS], feedrate/60, active_extruder);
+		 RUNPLAN;
 
         if(code_seen('L'))
         {
-          target[E_AXIS]+= code_value();
+          destination[E_AXIS]+= code_value();
         }
         else
         {
           #ifdef FILAMENTCHANGE_FINALRETRACT
-            target[E_AXIS]+= FILAMENTCHANGE_FINALRETRACT ;
+            destination[E_AXIS]+= FILAMENTCHANGE_FINALRETRACT ;
           #endif
         }
 
-        plan_buffer_line(target[X_AXIS], target[Y_AXIS], target[Z_AXIS], target[E_AXIS], feedrate/60, active_extruder);
+        RUNPLAN;
 
         //finish moves
         st_synchronize();
@@ -3824,24 +3845,35 @@ case 404:  //M404 Enter the nominal filament width (3mm, 1.75mm ) N<3.0> or disp
           #endif
           }
         }
+		 
 
         //return to normal
         if(code_seen('L'))
         {
-          target[E_AXIS]+= -code_value();
+          destination[E_AXIS]+= -code_value();
         }
         else
         {
           #ifdef FILAMENTCHANGE_FINALRETRACT
-            target[E_AXIS]+=(-1)*FILAMENTCHANGE_FINALRETRACT ;
+            destination[E_AXIS]+=(-1)*FILAMENTCHANGE_FINALRETRACT ;
           #endif
         }
-        current_position[E_AXIS]=target[E_AXIS]; //the long retract of L is compensated by manual filament feeding
+        current_position[E_AXIS]=destination[E_AXIS]; //the long retract of L is compensated by manual filament feeding
         plan_set_e_position(current_position[E_AXIS]);
-        plan_buffer_line(target[X_AXIS], target[Y_AXIS], target[Z_AXIS], target[E_AXIS], feedrate/60, active_extruder); //should do nothing
-        plan_buffer_line(lastpos[X_AXIS], lastpos[Y_AXIS], target[Z_AXIS], target[E_AXIS], feedrate/60, active_extruder); //move xy back
-        plan_buffer_line(lastpos[X_AXIS], lastpos[Y_AXIS], lastpos[Z_AXIS], target[E_AXIS], feedrate/60, active_extruder); //move z back
+		lcd_reset_alert_level();
+#ifdef DELTA
+		RUNPLAN; //should do nothing
+		
+		// Move XYZ to starting position, then E
+      calculate_delta(lastpos);
+      plan_buffer_line(delta[X_AXIS], delta[Y_AXIS], delta[Z_AXIS], destination[E_AXIS], fr60, active_extruder);
+      plan_buffer_line(delta[X_AXIS], delta[Y_AXIS], delta[Z_AXIS], lastpos[E_AXIS], fr60, active_extruder);
+#else		
+        plan_buffer_line(destination[X_AXIS], destination[Y_AXIS], destination[Z_AXIS], destination[E_AXIS], feedrate/60, active_extruder); //should do nothing
+        plan_buffer_line(lastpos[X_AXIS], lastpos[Y_AXIS], destination[Z_AXIS], destination[E_AXIS], feedrate/60, active_extruder); //move xy back
+        plan_buffer_line(lastpos[X_AXIS], lastpos[Y_AXIS], lastpos[Z_AXIS], destination[E_AXIS], feedrate/60, active_extruder); //move z back
         plan_buffer_line(lastpos[X_AXIS], lastpos[Y_AXIS], lastpos[Z_AXIS], lastpos[E_AXIS], feedrate/60, active_extruder); //final untretract
+#endif
     }
     break;
     #endif //FILAMENTCHANGEENABLE
@@ -4158,6 +4190,9 @@ void clamp_to_software_endstops(float target[3])
 #ifdef DELTA
 void recalc_delta_settings(float radius, float diagonal_rod)
 {
+	 max_length_a[Z_AXIS]= max_pos[Z_AXIS] - Z_MIN_POS;
+	 base_home_pos_a[Z_AXIS] = base_max_pos_a[Z_AXIS]  = max_pos[Z_AXIS];
+
 	 delta_tower1_x= -SIN_60*radius; // front left tower
 	 delta_tower1_y= -COS_60*radius;	   
 	 delta_tower2_x=  SIN_60*radius; // front right tower
@@ -4165,6 +4200,7 @@ void recalc_delta_settings(float radius, float diagonal_rod)
 	 delta_tower3_x= 0.0;                  // back middle tower
 	 delta_tower3_y= radius;
 	 delta_diagonal_rod_2= sq(diagonal_rod);
+	 
 }
 
 void calculate_delta(float cartesian[3])
