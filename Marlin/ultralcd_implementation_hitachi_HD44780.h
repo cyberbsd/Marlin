@@ -255,7 +255,7 @@ static void lcd_implementation_init()
         B01010,
         B01010,
         B10001,
-        B10001,
+        B10101,
         B01110
     };
     byte uplevel[8]={

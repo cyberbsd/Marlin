@@ -179,6 +179,9 @@ void calculate_delta(float cartesian[3]);
 void adjust_delta(float cartesian[3]);
 void prepare_move_raw();
 extern float delta[3];
+extern float delta_tower1_x,delta_tower1_y;
+extern float delta_tower2_x,delta_tower2_y;
+extern float delta_tower3_x,delta_tower3_y;
 #endif
 #ifdef SCARA
 void calculate_delta(float cartesian[3]);
@@ -216,6 +219,7 @@ extern float current_position[NUM_AXIS] ;
 extern float add_homing[3];
 #ifdef DELTA
 extern float endstop_adj[3];
+extern float tower_adj[6];
 extern float delta_radius;
 extern float delta_diagonal_rod;
 extern float delta_segments_per_second;

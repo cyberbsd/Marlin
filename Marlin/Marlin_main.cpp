@@ -227,6 +227,7 @@ float current_position[NUM_AXIS] = { 0.0, 0.0, 0.0, 0.0 };
 float add_homing[3]={0,0,0};
 #ifdef DELTA
 float endstop_adj[3]={0,0,0};
+float tower_adj[6]={0,0,0,0,0,0};
 float base_max_pos_a[3] = {X_MAX_POS, Y_MAX_POS, Z_MAX_POS};
 float base_home_pos_a[3] = {X_HOME_POS, Y_HOME_POS, Z_HOME_POS};
 float max_length_a[3] = {X_MAX_LENGTH, Y_MAX_LENGTH, Z_MAX_LENGTH};
@@ -3117,8 +3118,17 @@ Sigma_Exit:
 			delta_segments_per_second= code_value();
 		}
 		if(code_seen('Z')) {
-			max_pos[2] = code_value();
+			max_pos[Z_AXIS] = code_value();
 		}
+		if (code_seen('D')) {
+			tower_adj[0] = code_value();
+	    }
+	    if (code_seen('E')) {
+			tower_adj[1] = code_value();
+	    }
+	    if (code_seen('H')) {
+			tower_adj[2] = code_value();
+	    }
 		
 		recalc_delta_settings(delta_radius, delta_diagonal_rod);
 		break;
@@ -3127,6 +3137,67 @@ Sigma_Exit:
       {
         if(code_seen(axis_codes[i])) endstop_adj[i] = code_value();
       }
+	   if (code_seen('A')) {
+		tower_adj[0] = code_value();
+	   }
+	   if (code_seen('B')) {
+		tower_adj[1] = code_value();
+	   }
+	   if (code_seen('C')) {
+		tower_adj[2] = code_value();
+	   }
+           if (code_seen('I')) {
+		tower_adj[3] = code_value();
+	   }
+	   if (code_seen('J')) {
+		tower_adj[4] = code_value();
+	   }
+	   if (code_seen('K')) {
+		tower_adj[5] = code_value();
+	   }
+           if (code_seen('R')) {
+           delta_radius = code_value();
+         }
+           if (code_seen('D')) {
+             delta_diagonal_rod = code_value();
+         }
+           if (code_seen('H')) {
+             max_pos[Z_AXIS]= code_value();  
+         }
+	   recalc_delta_settings(delta_radius, delta_diagonal_rod);
+	   if (code_seen('P')) {
+             zprobe_zoffset = code_value();
+	   }
+	   if (code_seen('L')) {
+	     SERIAL_ECHOLN("Current Delta geometry values:");
+	     SERIAL_ECHOPAIR("X (Endstop Adj): ",endstop_adj[0]);
+             SERIAL_ECHOLN("");
+	     SERIAL_ECHOPAIR("Y (Endstop Adj): ",endstop_adj[1]);
+             SERIAL_ECHOLN("");
+	     SERIAL_ECHOPAIR("Z (Endstop Adj): ",endstop_adj[2]);
+             SERIAL_ECHOLN("");
+             SERIAL_ECHOPAIR("P (Z-Probe Offset): Z:", zprobe_zoffset);
+             SERIAL_ECHOLN("");
+             SERIAL_ECHOPAIR("A (Tower A Position Correction): ",tower_adj[0]);
+             SERIAL_ECHOLN("");
+             SERIAL_ECHOPAIR("B (Tower B Position Correction): ",tower_adj[1]);
+             SERIAL_ECHOLN("");
+             SERIAL_ECHOPAIR("C (Tower C Position Correction): ",tower_adj[2]);
+	     SERIAL_ECHOLN("");
+             SERIAL_ECHOPAIR("I (Tower A Radius Correction): ",tower_adj[3]);
+             SERIAL_ECHOLN("");
+             SERIAL_ECHOPAIR("J (Tower B Radius Correction): ",tower_adj[4]);
+             SERIAL_ECHOLN("");
+             SERIAL_ECHOPAIR("K (Tower C Radius Correction): ",tower_adj[5]);
+	     SERIAL_ECHOLN("");
+             SERIAL_ECHOPAIR("R (Delta Radius): ",delta_radius);
+             SERIAL_ECHOLN("");
+             SERIAL_ECHOPAIR("D (Diagonal Rod Length): ",delta_diagonal_rod);
+	     SERIAL_ECHOLN("");
+             SERIAL_ECHOPAIR("H (Z-Height): ",max_pos[Z_AXIS]);
+             SERIAL_ECHOLN("");
+             }
+
       break;
     #endif
     #ifdef FWRETRACT
@@ -4192,14 +4263,21 @@ void recalc_delta_settings(float radius, float diagonal_rod)
 {
 	 max_length_a[Z_AXIS]= max_pos[Z_AXIS] - Z_MIN_POS;
 	 base_home_pos_a[Z_AXIS] = base_max_pos_a[Z_AXIS]  = max_pos[Z_AXIS];
-
+/*
 	 delta_tower1_x= -SIN_60*radius; // front left tower
 	 delta_tower1_y= -COS_60*radius;	   
 	 delta_tower2_x=  SIN_60*radius; // front right tower
 	 delta_tower2_y= -COS_60*radius;	   
 	 delta_tower3_x= 0.0;                  // back middle tower
 	 delta_tower3_y= radius;
+*/
 	 delta_diagonal_rod_2= sq(diagonal_rod);
+	 delta_tower1_x = (delta_radius + tower_adj[3]) * cos((210 + tower_adj[0]) * PI/180); // front left tower
+	 delta_tower1_y = (delta_radius + tower_adj[3]) * sin((210 + tower_adj[0]) * PI/180); 
+	 delta_tower2_x = (delta_radius + tower_adj[4]) * cos((330 + tower_adj[1]) * PI/180); // front right tower
+	 delta_tower2_y = (delta_radius + tower_adj[4]) * sin((330 + tower_adj[1]) * PI/180); 
+	 delta_tower3_x = (delta_radius + tower_adj[5]) * cos((90 + tower_adj[2]) * PI/180);  // back middle tower
+	 delta_tower3_y = (delta_radius + tower_adj[5]) * sin((90 + tower_adj[2]) * PI/180); 
 	 
 }
 
