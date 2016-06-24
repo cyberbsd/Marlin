@@ -3129,6 +3129,15 @@ Sigma_Exit:
 	    if (code_seen('H')) {
 			tower_adj[2] = code_value();
 	    }
+		if (code_seen('A')) {
+			tower_adj[3] = code_value();
+	    }
+	    if (code_seen('B')) {
+			tower_adj[4] = code_value();
+	    }
+	    if (code_seen('C')) {
+			tower_adj[5] = code_value();
+	    }
 		
 		recalc_delta_settings(delta_radius, delta_diagonal_rod);
 		break;
@@ -3155,15 +3164,15 @@ Sigma_Exit:
 	   if (code_seen('K')) {
 		tower_adj[5] = code_value();
 	   }
-           if (code_seen('R')) {
-           delta_radius = code_value();
-         }
-           if (code_seen('D')) {
-             delta_diagonal_rod = code_value();
-         }
-           if (code_seen('H')) {
-             max_pos[Z_AXIS]= code_value();  
-         }
+	   if (code_seen('R')) {
+		 delta_radius = code_value();
+		}
+	   if (code_seen('D')) {
+		 delta_diagonal_rod = code_value();
+		}
+	   if (code_seen('H')) {
+		 max_pos[Z_AXIS]= code_value();  
+		}
 	   recalc_delta_settings(delta_radius, delta_diagonal_rod);
 	   if (code_seen('P')) {
              zprobe_zoffset = code_value();
