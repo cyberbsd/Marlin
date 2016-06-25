@@ -275,9 +275,21 @@ static void lcd_sdcard_pause()
 {
     card.pauseSDPrint();
 }
+
+static void lcd_sdcard_m600()
+{
+    //card.pauseSDPrint();
+    enquecommand_P((PSTR("M600")));
+}
+
 static void lcd_sdcard_resume()
 {
-    card.startFileprint();
+    if (changing_filament)
+    {  
+        enquecommand_P((PSTR("M601")));
+    }
+	 else
+		card.startFileprint();
 }
 
 static void lcd_sdcard_stop()
@@ -294,6 +306,7 @@ static void lcd_sdcard_stop()
 	cancel_heatup = true;
 
 	lcd_setstatus(MSG_PRINT_ABORTED);
+	enquecommand_P((PSTR("G28")));
 }
 
 /* Menu implementation */
@@ -314,7 +327,10 @@ static void lcd_main_menu()
         if (card.isFileOpen())
         {
             if (card.sdprinting)
+			{
                 MENU_ITEM(function, MSG_PAUSE_PRINT, lcd_sdcard_pause);
+				MENU_ITEM(function, MSG_CHANGE_FILAMENT, lcd_sdcard_m600);
+			}
             else
                 MENU_ITEM(function, MSG_RESUME_PRINT, lcd_sdcard_resume);
             MENU_ITEM(function, MSG_STOP_PRINT, lcd_sdcard_stop);
@@ -555,12 +571,13 @@ static void lcd_preheat_abs_menu()
     END_MENU();
 }
 
-void change_filament()
+void unload_filament()
 {
     enquecommand_P((PSTR("G91")));
     enquecommand_P((PSTR("G1 F300 E30")));
     enquecommand_P((PSTR("G1 F3000 E-20")));
     enquecommand_P((PSTR("G1 F5000 E-1000")));
+	enquecommand_P((PSTR("G90")));
 }
 void load_filament()
 {
@@ -568,6 +585,7 @@ void load_filament()
     enquecommand_P((PSTR("G91")));
     enquecommand_P((PSTR("G0 E1000 F6000")));
     enquecommand_P((PSTR("G0 E100 F200")));
+	enquecommand_P((PSTR("G90")));
  
    
 }
@@ -606,7 +624,7 @@ static void lcd_prepare_menu()
   #endif
 #endif
     MENU_ITEM(function, MSG_LOAD_FILAMENT,load_filament);
-    MENU_ITEM(function, MSG_CHANGE_FILAMENT,change_filament);
+    MENU_ITEM(function, MSG_UNLOAD_FILAMENT,unload_filament);
     MENU_ITEM(function, MSG_COOLDOWN, lcd_cooldown);
 #if PS_ON_PIN > -1
     if (powersupply)
@@ -810,7 +828,7 @@ static void lcd_control_motion_menu()
     START_MENU();
     MENU_ITEM(back, MSG_CONTROL, lcd_control_menu);
 #ifdef ENABLE_AUTO_BED_LEVELING
-    MENU_ITEM_EDIT(float32, MSG_ZPROBE_ZOFFSET, &zprobe_zoffset, -1, 15);
+    MENU_ITEM_EDIT(float32, MSG_ZPROBE_ZOFFSET, &zprobe_zoffset, Z_MIN_POS, 15);
 #endif
     MENU_ITEM_EDIT(float5, MSG_ACC, &acceleration, 500, 99000);
     MENU_ITEM_EDIT(float3, MSG_VXY_JERK, &max_xy_jerk, 1, 990);

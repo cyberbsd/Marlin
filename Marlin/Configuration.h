@@ -71,8 +71,10 @@
 #define ATOM2   //PID for ATOM 2.0 Release & Upgrade kits
 #define SAVE_G29_CORRECTION_MATRIX //Save G29 bed level array
 #define DRV8825 //stepper driver for ATOM2.0 Release
+//#define TMC2100 //stepper driver for TMC2100
 #define ATOM2LCD //LCD for ATOM2.0 Release
 #define ATOM_LASER //ATOM Laser engraver support
+//#define ATOM_BED //ATOM heatbed support
 // Make delta curves from many straight lines (linear interpolation).
 // This is a trade-off between visible corners (not enough segments)
 // and processor overload (too many expensive sqrt calls).
@@ -155,7 +157,11 @@
 #define TEMP_SENSOR_0 99
 #define TEMP_SENSOR_1 0
 #define TEMP_SENSOR_2 0
+#ifdef ATOM_BED
+#define TEMP_SENSOR_BED 1
+#else
 #define TEMP_SENSOR_BED 0
+#endif
 
 // This makes temp sensor 1 a redundant sensor for sensor 0. If the temperatures difference between these sensors is to high the print will be aborted.
 //#define TEMP_SENSOR_1_AS_REDUNDANT
@@ -216,6 +222,9 @@
     #define  DEFAULT_Kp 29.67 
     #define  DEFAULT_Ki 6.78
     #define  DEFAULT_Kd 32.45
+    //#define  DEFAULT_Kp 16.54
+    //#define  DEFAULT_Ki 1.3
+    //#define  DEFAULT_Kd 52.56
 #else
 // ATOM
     #define  DEFAULT_Kp 20.74
@@ -248,7 +257,9 @@
 // If your configuration is significantly different than this and you don't understand the issues involved, you probably
 // shouldn't use bed PID until someone else verifies your hardware works.
 // If this is enabled, find your own PID constants below.
-//#define PIDTEMPBED
+#ifdef ATOM_BED
+#define PIDTEMPBED
+#endif
 //
 //#define BED_LIMIT_SWITCHING
 
@@ -261,9 +272,9 @@
 #ifdef PIDTEMPBED
 //120v 250W silicone heater into 4mm borosilicate (MendelMax 1.5+)
 //from FOPDT model - kp=.39 Tp=405 Tdead=66, Tc set to 79.2, aggressive factor of .15 (vs .1, 1, 10)
-    #define  DEFAULT_bedKp 10.00
-    #define  DEFAULT_bedKi .023
-    #define  DEFAULT_bedKd 305.4
+    #define  DEFAULT_bedKp 252.76
+    #define  DEFAULT_bedKi 45.92
+    #define  DEFAULT_bedKd 347.86
 
 //120v 250W silicone heater into 4mm borosilicate (MendelMax 1.5+)
 //from pidautotune
@@ -280,9 +291,13 @@
 //can be software-disabled for whatever purposes by
 #define PREVENT_DANGEROUS_EXTRUDE
 //if PREVENT_DANGEROUS_EXTRUDE is on, you can still disable (uncomment) very long bits of extrusion separately.
-#define PREVENT_LENGTHY_EXTRUDE
+//#define PREVENT_LENGTHY_EXTRUDE
 
+#ifdef ATOM_LASER
+#define EXTRUDE_MINTEMP 0
+#else
 #define EXTRUDE_MINTEMP 150
+#endif
 #define EXTRUDE_MAXLENGTH (X_MAX_LENGTH+Y_MAX_LENGTH) //prevent extrusion of very large distances.
 
 /*================== Thermal Runaway Protection ==============================
@@ -380,9 +395,15 @@ const bool Z_MAX_ENDSTOP_INVERTING = false; // set to true to invert the logic o
 #define DISABLE_E false // For all extruders
 #define DISABLE_INACTIVE_EXTRUDER true //disable only inactive extruders and keep active extruder enabled
 
+#ifdef TMC2100
+#define INVERT_X_DIR false    // for Mendel set to false, for Orca set to true
+#define INVERT_Y_DIR false    // for Mendel set to true, for Orca set to false
+#define INVERT_Z_DIR false    // for Mendel set to false, for Orca set to true
+#else
 #define INVERT_X_DIR true    // for Mendel set to false, for Orca set to true
 #define INVERT_Y_DIR true    // for Mendel set to true, for Orca set to false
 #define INVERT_Z_DIR true    // for Mendel set to false, for Orca set to true
+#endif
 #define INVERT_E0_DIR false   // for direct drive extruder v9 set to true, for geared extruder set to false
 #define INVERT_E1_DIR false   // for direct drive extruder v9 set to true, for geared extruder set to false
 #define INVERT_E2_DIR false   // for direct drive extruder v9 set to true, for geared extruder set to false
@@ -520,13 +541,17 @@ const bool Z_MAX_ENDSTOP_INVERTING = false; // set to true to invert the logic o
 //// MOVEMENT SETTINGS
 #define NUM_AXIS 4 // The axis order in all axis related arrays is X, Y, Z, E
 //#define HOMING_FEEDRATE {160*60, 160*60, 160*60, 0}  // set the homing speeds (mm/min)
-#define HOMING_FEEDRATE {30*60, 30*60, 30*60, 0}  // set the homing speeds (mm/min)
+#define HOMING_FEEDRATE {35*60, 35*60, 35*60, 0}  // set the homing speeds (mm/min)
 
 // default settings
 
 #define XYZ_FULL_STEPS_PER_ROTATION 200
 #ifdef DRV8825
+#ifdef TMC2100
+#define XYZ_MICROSTEPS 16
+#else
 #define XYZ_MICROSTEPS 32
+#endif
 #else
 #define XYZ_MICROSTEPS 16
 #endif
@@ -534,17 +559,23 @@ const bool Z_MAX_ENDSTOP_INVERTING = false; // set to true to invert the logic o
 #define XYZ_PULLEY_TEETH 20
 #define XYZ_STEPS (XYZ_FULL_STEPS_PER_ROTATION * XYZ_MICROSTEPS / double(XYZ_BELT_PITCH) / double(XYZ_PULLEY_TEETH))
 
+
 #ifdef DRV8825
 #define DEFAULT_AXIS_STEPS_PER_UNIT   {XYZ_STEPS, XYZ_STEPS, XYZ_STEPS, 200}
 #else
 #define DEFAULT_AXIS_STEPS_PER_UNIT   {XYZ_STEPS, XYZ_STEPS, XYZ_STEPS, 100}
 #endif
+
 //#define DEFAULT_MAX_FEEDRATE          {200, 200, 200, 200}    // (mm/sec)
 //#define DEFAULT_MAX_ACCELERATION      {9000,9000,9000,9000}    // X, Y, Z, E maximum start speed for accelerated moves. E default values are good for skeinforge 40+, for older versions raise them a lot.
 #define DEFAULT_MAX_FEEDRATE          {150, 150, 150, 300}    // (mm/sec)
 #define DEFAULT_MAX_ACCELERATION      {3000,3000,3000,10000}    // X, Y, Z, E maximum start speed for accelerated moves. E default values are good for skeinforge 40+, for older versions raise them a lot.
 
+#ifdef DRV8825
+#define DEFAULT_ACCELERATION          500    // X, Y, Z and E max acceleration in mm/s^2 for printing moves
+#else
 #define DEFAULT_ACCELERATION          3000    // X, Y, Z and E max acceleration in mm/s^2 for printing moves
+#endif
 #define DEFAULT_RETRACT_ACCELERATION  9000   // X, Y, Z and E max acceleration in mm/s^2 for retracts
 
 // Offset of the extruders (uncomment if using more than one and relying on firmware to position when changing).
@@ -566,7 +597,7 @@ const bool Z_MAX_ENDSTOP_INVERTING = false; // set to true to invert the logic o
 #define CUSTOM_M_CODES
 #ifdef CUSTOM_M_CODES
   #define CUSTOM_M_CODE_SET_Z_PROBE_OFFSET 851
-  #define Z_PROBE_OFFSET_RANGE_MIN -1
+  #define Z_PROBE_OFFSET_RANGE_MIN Z_MIN_POS
   #define Z_PROBE_OFFSET_RANGE_MAX 15
 #endif
 
@@ -584,12 +615,12 @@ const bool Z_MAX_ENDSTOP_INVERTING = false; // set to true to invert the logic o
 
 // Preheat Constants
 #define PLA_PREHEAT_HOTEND_TEMP 200
-#define PLA_PREHEAT_HPB_TEMP 70
+#define PLA_PREHEAT_HPB_TEMP 40
 #define PLA_PREHEAT_FAN_SPEED 0   // Insert Value between 0 and 255
 
 #define ABS_PREHEAT_HOTEND_TEMP 240
 #define ABS_PREHEAT_HPB_TEMP 100
-#define ABS_PREHEAT_FAN_SPEED 255   // Insert Value between 0 and 255
+#define ABS_PREHEAT_FAN_SPEED 0   // Insert Value between 0 and 255
 
 //LCD and SD support
 //#define ULTRA_LCD  //general LCD support, also 16x2

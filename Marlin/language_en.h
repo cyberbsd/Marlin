@@ -32,8 +32,6 @@
 #define MSG_PREHEAT_ABS012                  "Preheat ABS All"
 #define MSG_PREHEAT_ABS_BEDONLY             "Preheat ABS Bed"
 #define MSG_PREHEAT_ABS_SETTINGS            "Preheat ABS conf"
-#define MSG_LOAD_FILAMENT                   "Load Filament"
-#define MSG_CHANGE_FILAMENT                 "Unload Filament"
 #define MSG_COOLDOWN                        "Cooldown"
 #define MSG_SWITCH_PS_ON                    "Switch power on"
 #define MSG_SWITCH_PS_OFF                   "Switch power off"
@@ -129,5 +127,9 @@
 #define MSG_ENDSTOP_ABORT                   "Endstop abort"
 
 #define MSG_RECTRACT                        "Rectract"
+
+#define MSG_LOAD_FILAMENT                   "Load Filament"
+#define MSG_UNLOAD_FILAMENT                 "Unload Filament"
+#define MSG_CHANGE_FILAMENT 				  	 "Change Filament"
 
 #endif // LANGUAGE_EN_H

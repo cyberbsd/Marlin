@@ -238,6 +238,7 @@ float max_pos[3] = { X_MAX_POS, Y_MAX_POS, Z_MAX_POS };
 bool axis_known_position[3] = {false, false, false};
 float zprobe_zoffset;
 float run_time = 0;
+bool changing_filament = false;
 
 // Extruder offset
 #if EXTRUDERS > 1
@@ -342,6 +343,7 @@ bool cancel_heatup = false ;
 //===========================================================================
 const char axis_codes[NUM_AXIS] = {'X', 'Y', 'Z', 'E'};
 static float destination[NUM_AXIS] = {  0.0, 0.0, 0.0, 0.0};
+float lastpos[NUM_AXIS] = {  0.0, 0.0, 0.0, 0.0};
 
 #ifndef DELTA
 static float delta[3] = {0.0, 0.0, 0.0};
@@ -3814,8 +3816,15 @@ case 404:  //M404 Enter the nominal filament width (3mm, 1.75mm ) N<3.0> or disp
     #ifdef FILAMENTCHANGEENABLE
     case 600: //Pause for filament change X[pos] Y[pos] Z[relative lift] E[initial retract] L[later retract distance for removal]
     {
-        
-        float lastpos[4];
+		 if ((card.cardOK) && (card.isFileOpen()))
+		 {
+			if(card.sdprinting)
+				card.pauseSDPrint();
+		 }
+		 if(changing_filament == false)
+				changing_filament = true;
+         saved_feedmultiply = feedmultiply;
+		 saved_feedrate = feedrate;
 		 #ifdef DELTA
 			 float fr60 = feedrate / 60;
 		 #endif
@@ -3879,7 +3888,8 @@ case 404:  //M404 Enter the nominal filament width (3mm, 1.75mm ) N<3.0> or disp
           #endif
         }
 		 RUNPLAN;
-
+		 //finish moves
+        st_synchronize();
         if(code_seen('L'))
         {
           destination[E_AXIS]+= code_value();
@@ -3890,8 +3900,8 @@ case 404:  //M404 Enter the nominal filament width (3mm, 1.75mm ) N<3.0> or disp
             destination[E_AXIS]+= FILAMENTCHANGE_FINALRETRACT ;
           #endif
         }
-
-        RUNPLAN;
+		 plan_buffer_line(delta[X_AXIS], delta[Y_AXIS], delta[Z_AXIS], destination[E_AXIS], 5000, active_extruder);
+        //RUNPLAN;
 
         //finish moves
         st_synchronize();
@@ -3915,7 +3925,7 @@ case 404:  //M404 Enter the nominal filament width (3mm, 1.75mm ) N<3.0> or disp
             WRITE(BEEPER,HIGH);
             delay(3);
             WRITE(BEEPER,LOW);
-            delay(3);
+            delay(500);
           #else
 			#if !defined(LCD_FEEDBACK_FREQUENCY_HZ) || !defined(LCD_FEEDBACK_FREQUENCY_DURATION_MS)
               lcd_buzz(1000/6,100);
@@ -3926,36 +3936,67 @@ case 404:  //M404 Enter the nominal filament width (3mm, 1.75mm ) N<3.0> or disp
           }
         }
 		 
+		 lcd_reset_alert_level();
+		 for (int i = 0; i < NUM_AXIS; i++)
+				current_position[i] = destination[i] ;
 
         //return to normal
-        if(code_seen('L'))
-        {
-          destination[E_AXIS]+= -code_value();
-        }
-        else
-        {
-          #ifdef FILAMENTCHANGE_FINALRETRACT
-            destination[E_AXIS]+=(-1)*FILAMENTCHANGE_FINALRETRACT ;
-          #endif
-        }
-        current_position[E_AXIS]=destination[E_AXIS]; //the long retract of L is compensated by manual filament feeding
-        plan_set_e_position(current_position[E_AXIS]);
-		lcd_reset_alert_level();
-#ifdef DELTA
-		RUNPLAN; //should do nothing
-		
-		// Move XYZ to starting position, then E
-      calculate_delta(lastpos);
-      plan_buffer_line(delta[X_AXIS], delta[Y_AXIS], delta[Z_AXIS], destination[E_AXIS], fr60, active_extruder);
-      plan_buffer_line(delta[X_AXIS], delta[Y_AXIS], delta[Z_AXIS], lastpos[E_AXIS], fr60, active_extruder);
-#else		
-        plan_buffer_line(destination[X_AXIS], destination[Y_AXIS], destination[Z_AXIS], destination[E_AXIS], feedrate/60, active_extruder); //should do nothing
-        plan_buffer_line(lastpos[X_AXIS], lastpos[Y_AXIS], destination[Z_AXIS], destination[E_AXIS], feedrate/60, active_extruder); //move xy back
-        plan_buffer_line(lastpos[X_AXIS], lastpos[Y_AXIS], lastpos[Z_AXIS], destination[E_AXIS], feedrate/60, active_extruder); //move z back
-        plan_buffer_line(lastpos[X_AXIS], lastpos[Y_AXIS], lastpos[Z_AXIS], lastpos[E_AXIS], feedrate/60, active_extruder); //final untretract
-#endif
+        if ((card.cardOK) && (card.isFileOpen()))
+		{
+
+		}
+		else
+		{
+			/*if(code_seen('L'))
+			{
+			  destination[E_AXIS]+= -code_value();
+			}
+			else
+			{
+			  #ifdef FILAMENTCHANGE_FINALRETRACT
+				destination[E_AXIS]+=(-1)*FILAMENTCHANGE_FINALRETRACT ;
+			  #endif
+			}*/
+			current_position[E_AXIS]=destination[E_AXIS]=lastpos[E_AXIS]; //the long retract of L is compensated by manual filament feeding
+			plan_set_e_position(current_position[E_AXIS]);
+			 
+			
+	#ifdef DELTA
+			RUNPLAN; //should do nothing
+			
+			// Move XYZ to starting position, then E
+		  calculate_delta(lastpos);
+		  //plan_buffer_line(delta[X_AXIS], delta[Y_AXIS], delta[Z_AXIS], destination[E_AXIS], fr60, active_extruder);
+		  plan_buffer_line(delta[X_AXIS], delta[Y_AXIS], delta[Z_AXIS], lastpos[E_AXIS], fr60, active_extruder);
+	#else		
+			plan_buffer_line(destination[X_AXIS], destination[Y_AXIS], destination[Z_AXIS], destination[E_AXIS], feedrate/60, active_extruder); //should do nothing
+			plan_buffer_line(lastpos[X_AXIS], lastpos[Y_AXIS], destination[Z_AXIS], destination[E_AXIS], feedrate/60, active_extruder); //move xy back
+			plan_buffer_line(lastpos[X_AXIS], lastpos[Y_AXIS], lastpos[Z_AXIS], destination[E_AXIS], feedrate/60, active_extruder); //move z back
+			plan_buffer_line(lastpos[X_AXIS], lastpos[Y_AXIS], lastpos[Z_AXIS], lastpos[E_AXIS], feedrate/60, active_extruder); //final untretract
+	#endif
+			changing_filament = false;
+			//finish moves
+			st_synchronize();
+		}
     }
     break;
+	case 601://resume (with pause move)
+		  if(changing_filament) {
+			  changing_filament = false;
+			  current_position[E_AXIS] = destination[E_AXIS] = lastpos[E_AXIS]; //the long retract of L is compensated by manual filament feeding
+			  plan_set_e_position(current_position[E_AXIS]);
+			  feedmultiply = saved_feedmultiply;
+			  feedrate = saved_feedrate;
+			  // Move XYZ to starting position, then E
+			  calculate_delta(lastpos);
+			  plan_buffer_line(delta[X_AXIS], delta[Y_AXIS], delta[Z_AXIS], destination[E_AXIS], feedrate, active_extruder);
+			  st_synchronize();
+			  if ((card.cardOK) && (card.isFileOpen()))
+			  {
+			      card.startFileprint();
+			  }
+		  }
+	break;
     #endif //FILAMENTCHANGEENABLE
     #ifdef DUAL_X_CARRIAGE
     case 605: // Set dual x-carriage movement mode:
