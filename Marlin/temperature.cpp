@@ -317,8 +317,8 @@ void PID_autotune(float temp, int extruder, int ncycles)
     if(cycles > ncycles) {
       SERIAL_ECHO_START;
       SERIAL_ECHOPAIR("   M301 P",Kp); 
-      SERIAL_ECHOPAIR(" I" ,unscalePID_i(Ki)); 
-      SERIAL_ECHOPAIR(" D" ,unscalePID_d(Kd));
+      SERIAL_ECHOPAIR(" I" ,Ki); 
+      SERIAL_ECHOPAIR(" D" ,Kd);
       SERIAL_ECHOLN(""); 
       Ki = scalePID_i(Ki);
       Kd = scalePID_d(Kd);
