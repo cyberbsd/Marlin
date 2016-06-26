@@ -3823,20 +3823,13 @@ case 404:  //M404 Enter the nominal filament width (3mm, 1.75mm ) N<3.0> or disp
 		 }
 		 if(changing_filament == false)
 				changing_filament = true;
-         saved_feedmultiply = feedmultiply;
+		 st_synchronize();
+		 saved_feedmultiply = feedmultiply;
 		 saved_feedrate = feedrate;
-		 #ifdef DELTA
-			 float fr60 = feedrate / 60;
-		 #endif
 		 for (int i = 0; i < NUM_AXIS; i++)
 			lastpos[i] = destination[i] = current_position[i];
-		#ifdef DELTA
-			#define RUNPLAN calculate_delta(destination); \
-                      plan_buffer_line(delta[X_AXIS], delta[Y_AXIS], delta[Z_AXIS], destination[E_AXIS], fr60, active_extruder);
-		#else
-			#define RUNPLAN plan_buffer_line(destination[X_AXIS], destination[Y_AXIS], destination[Z_AXIS], destination[E_AXIS], feedrate/60, active_extruder);
-		#endif
-        //retract by E
+
+		 //retract by E
         if(code_seen('E'))
         {
           destination[E_AXIS]+= code_value();
@@ -3847,9 +3840,6 @@ case 404:  //M404 Enter the nominal filament width (3mm, 1.75mm ) N<3.0> or disp
             destination[E_AXIS]+= FILAMENTCHANGE_FIRSTRETRACT ;
           #endif
         }
-#ifndef DELTA 
-		 RUNPLAN;
-#endif
 
         //lift Z
         if(code_seen('Z'))
@@ -3862,9 +3852,6 @@ case 404:  //M404 Enter the nominal filament width (3mm, 1.75mm ) N<3.0> or disp
             destination[Z_AXIS]+= FILAMENTCHANGE_ZADD ;
           #endif
         }
-#ifndef DELTA 
-		 RUNPLAN;
-#endif
 
         //move xy
         if(code_seen('X'))
@@ -3887,7 +3874,7 @@ case 404:  //M404 Enter the nominal filament width (3mm, 1.75mm ) N<3.0> or disp
             destination[Y_AXIS]= FILAMENTCHANGE_YPOS ;
           #endif
         }
-		 RUNPLAN;
+		 prepare_move();
 		 //finish moves
         st_synchronize();
         if(code_seen('L'))
@@ -3900,8 +3887,8 @@ case 404:  //M404 Enter the nominal filament width (3mm, 1.75mm ) N<3.0> or disp
             destination[E_AXIS]+= FILAMENTCHANGE_FINALRETRACT ;
           #endif
         }
-		 plan_buffer_line(delta[X_AXIS], delta[Y_AXIS], delta[Z_AXIS], destination[E_AXIS], 5000, active_extruder);
-        //RUNPLAN;
+		 feedrate = 6000;
+		 prepare_move();
 
         //finish moves
         st_synchronize();
@@ -3925,7 +3912,7 @@ case 404:  //M404 Enter the nominal filament width (3mm, 1.75mm ) N<3.0> or disp
             WRITE(BEEPER,HIGH);
             delay(3);
             WRITE(BEEPER,LOW);
-            delay(500);
+            delay(200);
           #else
 			#if !defined(LCD_FEEDBACK_FREQUENCY_HZ) || !defined(LCD_FEEDBACK_FREQUENCY_DURATION_MS)
               lcd_buzz(1000/6,100);
@@ -3941,55 +3928,40 @@ case 404:  //M404 Enter the nominal filament width (3mm, 1.75mm ) N<3.0> or disp
 				current_position[i] = destination[i] ;
 
         //return to normal
+		/*
         if ((card.cardOK) && (card.isFileOpen()))
 		{
 
 		}
 		else
 		{
-			/*if(code_seen('L'))
-			{
-			  destination[E_AXIS]+= -code_value();
-			}
-			else
-			{
-			  #ifdef FILAMENTCHANGE_FINALRETRACT
-				destination[E_AXIS]+=(-1)*FILAMENTCHANGE_FINALRETRACT ;
-			  #endif
-			}*/
 			current_position[E_AXIS]=destination[E_AXIS]=lastpos[E_AXIS]; //the long retract of L is compensated by manual filament feeding
 			plan_set_e_position(current_position[E_AXIS]);
-			 
+			st_synchronize();
+			// Move XYZ to starting position
+		    for (int i = 0; i < NUM_AXIS; i++)
+				destination[i] = lastpos[i];
+		    prepare_move();
 			
-	#ifdef DELTA
-			RUNPLAN; //should do nothing
-			
-			// Move XYZ to starting position, then E
-		  calculate_delta(lastpos);
-		  //plan_buffer_line(delta[X_AXIS], delta[Y_AXIS], delta[Z_AXIS], destination[E_AXIS], fr60, active_extruder);
-		  plan_buffer_line(delta[X_AXIS], delta[Y_AXIS], delta[Z_AXIS], lastpos[E_AXIS], fr60, active_extruder);
-	#else		
-			plan_buffer_line(destination[X_AXIS], destination[Y_AXIS], destination[Z_AXIS], destination[E_AXIS], feedrate/60, active_extruder); //should do nothing
-			plan_buffer_line(lastpos[X_AXIS], lastpos[Y_AXIS], destination[Z_AXIS], destination[E_AXIS], feedrate/60, active_extruder); //move xy back
-			plan_buffer_line(lastpos[X_AXIS], lastpos[Y_AXIS], lastpos[Z_AXIS], destination[E_AXIS], feedrate/60, active_extruder); //move z back
-			plan_buffer_line(lastpos[X_AXIS], lastpos[Y_AXIS], lastpos[Z_AXIS], lastpos[E_AXIS], feedrate/60, active_extruder); //final untretract
-	#endif
-			changing_filament = false;
 			//finish moves
 			st_synchronize();
+			changing_filament = false;
 		}
+		 */
     }
     break;
 	case 601://resume (with pause move)
 		  if(changing_filament) {
 			  changing_filament = false;
-			  current_position[E_AXIS] = destination[E_AXIS] = lastpos[E_AXIS]; //the long retract of L is compensated by manual filament feeding
+			  st_synchronize();
+			  current_position[E_AXIS] = lastpos[E_AXIS];
 			  plan_set_e_position(current_position[E_AXIS]);
+			  st_synchronize();
 			  feedmultiply = saved_feedmultiply;
 			  feedrate = saved_feedrate;
-			  // Move XYZ to starting position, then E
-			  calculate_delta(lastpos);
-			  plan_buffer_line(delta[X_AXIS], delta[Y_AXIS], delta[Z_AXIS], destination[E_AXIS], feedrate, active_extruder);
+			  for (int i = 0; i < NUM_AXIS; i++)
+				destination[i] = lastpos[i];
+		      prepare_move();
 			  st_synchronize();
 			  if ((card.cardOK) && (card.isFileOpen()))
 			  {
