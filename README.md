@@ -5,6 +5,7 @@ Fork from Johann's Marlin fw deltabot branch.
 
 Configuration is for ATOM 3D printer from ALT Design
 ![](http://static.squarespace.com/static/5218ef36e4b0564f9832daf6/522df647e4b0832d81b9d967/52fa1e88e4b048c18ab7a33c/1392123531243/render(13).png?format=1000w)
+![](http://www.atom3dp.com/wp-content/uploads/2015/01/ATOM2-FrontPerspMiddleB-1030x686.jpg)
 http://atom3dp.com/ 
 
 ## To use on ATOM 2.0 Release:
@@ -39,13 +40,10 @@ Developer Notes
 ==========================
 Marlin 3D Printer Firmware
 ==========================
-[![Coverity Scan Build Status](https://scan.coverity.com/projects/2224/badge.svg)](https://scan.coverity.com/projects/2224)
-[![Travis Build Status](https://travis-ci.org/ErikZalm/Marlin.svg)](https://travis-ci.org/ErikZalm/Marlin)
+[![Travis Build Status](https://travis-ci.org/cyberbsd/Marlin-deltabot.svg)](https://travis-ci.org/cyberbsd/Marlin-deltabot)
 
 Marlin has a GPL license because I believe in open development.
 Please do not use this code in products (3D printers, CNC etc) that are closed source or are crippled by a patent.
-
-[![Flattr this git repo](http://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/submit/auto?user_id=ErikZalm&url=https://github.com/ErikZalm/Marlin&title=Marlin&language=&tags=github&category=software)
 
 Quick Information
 ===================
@@ -284,7 +282,8 @@ M Codes
 *  M503 - print the current settings (from memory not from eeprom)
 *  M540 - Use S[0|1] to enable or disable the stop SD card print on endstop hit (requires ABORT_ON_ENDSTOP_HIT_FEATURE_ENABLED)
 *  M600 - Pause for filament change X[pos] Y[pos] Z[relative lift] E[initial retract] L[later retract distance for removal]
-*  M665 - Set delta configuration L=delta_diagonal_rod, R=delta_radius, S=delta_segments_per_second
+*  M601 - Resume after filament change 
+*  M665 - Set delta configuration L=delta_diagonal_rod, R=delta_radius, S=delta_segments_per_second Axxx Bxxx Cxxx Dxxx Exxx Hxxx Z=Z height
 *  M666 - Set delta endstop adjustment, only negative support (X,Y,Z)
 *  M907 - Set digital trimpot motor current using axis codes.
 *  M908 - Control digital trimpot directly.
