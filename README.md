@@ -40,13 +40,10 @@ Developer Notes
 ==========================
 Marlin 3D Printer Firmware
 ==========================
-[![Coverity Scan Build Status](https://scan.coverity.com/projects/9283/badge.svg)](https://scan.coverity.com/projects/cyberbsd-marlin-deltabot)
 [![Travis Build Status](https://travis-ci.org/cyberbsd/Marlin-deltabot.svg)](https://travis-ci.org/cyberbsd/Marlin-deltabot)
 
 Marlin has a GPL license because I believe in open development.
 Please do not use this code in products (3D printers, CNC etc) that are closed source or are crippled by a patent.
-
-[![Flattr this git repo](http://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/submit/auto?user_id=ErikZalm&url=https://github.com/ErikZalm/Marlin&title=Marlin&language=&tags=github&category=software)
 
 Quick Information
 ===================

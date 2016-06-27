@@ -11,4 +11,4 @@ install:
   - gcc --version
   - g++ --version
 
-script: "cd Marlin && make HARDWARE_MOTHERBOARD=70 ARDUINO_INSTALL_DIR=/usr/share/arduino"
+script: "cd Marlin && make ARDUINO_INSTALL_DIR=/usr/share/arduino"
