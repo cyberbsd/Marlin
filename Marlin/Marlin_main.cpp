@@ -1190,7 +1190,15 @@ static void retract_z_probe() {
     }
     #else // Push up the Z probe by moving the end effector, no servo needed.
 #ifdef ATOM 
-    do_blocking_move_to(current_position[X_AXIS], current_position[Y_AXIS], current_position[Z_AXIS] + Z_RAISE_BETWEEN_PROBINGS);
+    //do_blocking_move_to(current_position[X_AXIS], current_position[Y_AXIS], current_position[Z_AXIS] + Z_RAISE_BETWEEN_PROBINGS);
+    feedrate = homing_feedrate[X_AXIS];
+    destination[Z_AXIS] = current_position[Z_AXIS] + 20;
+    prepare_move_raw();
+    
+    destination[X_AXIS] = 0;
+    destination[Y_AXIS] = 0;
+    destination[Z_AXIS] = current_position[Z_AXIS] + Z_RAISE_BETWEEN_PROBINGS;
+    prepare_move_raw();
 #else //Not necessary for ATOM
     feedrate = homing_feedrate[X_AXIS];
     destination[Z_AXIS] = current_position[Z_AXIS] + 20;
@@ -1581,15 +1589,36 @@ void process_commands()
 
       enable_endstops(true);
 
+#ifdef DELTA
+	  for(int8_t i=3; i < NUM_AXIS; i++) {
+        destination[i] = current_position[i];
+      }
+#else
       for(int8_t i=0; i < NUM_AXIS; i++) {
         destination[i] = current_position[i];
       }
+#endif
       feedrate = 0.0;
+	  
+
 
 #ifdef DELTA
           // A delta can only safely home all axis at the same time
           // all axis have to home at the same time
 
+          //faster home if known position
+		   if ( (axis_known_position[X_AXIS] && axis_known_position[Y_AXIS]) && (current_position[Z_AXIS] < (max_pos[Z_AXIS]-30)))
+		   {
+    				for (int i = 0; i < 2; i++)
+				{
+              destination[i] = 0;
+				}
+  				  destination[Z_AXIS] = (max_pos[Z_AXIS]-30);
+            calculate_delta(destination);
+				feedrate = 9000;
+  				  plan_buffer_line(delta[X_AXIS], delta[Y_AXIS], delta[Z_AXIS], destination[E_AXIS], feedrate/60, active_extruder);
+				st_synchronize();
+		   }
           // Move all carriages up together until the first endstop is hit.
           current_position[X_AXIS] = 0;
           current_position[Y_AXIS] = 0;
