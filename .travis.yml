@@ -16,6 +16,7 @@ install:
   - ln -s /usr/local/share/arduino/arduino ~/bin/arduino
   # Our custom build commands
   - mv LinuxAddons/bin/*  ~/bin/
+  - chmod +x ~/bin/*
   - ls -la ~/bin
   # install our platform
   - cp -r ArduinoAddons/Arduino_1.6.x/hardware/* /usr/local/share/arduino/hardware
