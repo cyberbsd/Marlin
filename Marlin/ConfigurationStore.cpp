@@ -28,6 +28,7 @@ void _EEPROM_readData(int &pos, uint8_t* value, uint8_t size)
 
 
 
+#define DUMMY_PID_VALUE 3000.0f
 
 #define EEPROM_OFFSET 100
 
@@ -102,6 +103,14 @@ void Config_StoreSettings()
     EEPROM_WRITE_VAR(i,dummy);
     EEPROM_WRITE_VAR(i,dummy);
   #endif
+  #ifndef PIDTEMPBED
+    float bedKp = DUMMY_PID_VALUE, bedKi = DUMMY_PID_VALUE, bedKd = DUMMY_PID_VALUE;
+  #endif
+
+  EEPROM_WRITE_VAR(i, bedKp);
+  EEPROM_WRITE_VAR(i, bedKi);
+  EEPROM_WRITE_VAR(i, bedKd);
+
   #ifndef DOGLCD
     int lcd_contrast = 32;
   #endif
@@ -248,6 +257,13 @@ SERIAL_ECHOLNPGM("Scaling factors:");
     SERIAL_ECHOPAIR(" D" ,unscalePID_d(Kd));
     SERIAL_ECHOLN(""); 
 #endif
+#ifdef PIDTEMPBED
+      CONFIG_ECHO_START;
+      SERIAL_ECHOPAIR("  M304 P", bedKp);
+      SERIAL_ECHOPAIR(" I", unscalePID_i(bedKi));
+      SERIAL_ECHOPAIR(" D", unscalePID_d(bedKd));
+      SERIAL_EOL;
+#endif
 } 
 #endif
 
@@ -306,6 +322,12 @@ void Config_RetrieveSettings()
         EEPROM_READ_VAR(i,Kp);
         EEPROM_READ_VAR(i,Ki);
         EEPROM_READ_VAR(i,Kd);
+        #ifndef PIDTEMPBED
+        float bedKp, bedKi, bedKd;
+        #endif
+        EEPROM_READ_VAR(i,bedKp);
+        EEPROM_READ_VAR(i,bedKi);
+        EEPROM_READ_VAR(i,bedKd);
         #ifndef DOGLCD
         int lcd_contrast;
         #endif
@@ -398,6 +420,12 @@ void Config_ResetDefault()
     Kc = DEFAULT_Kc;
 #endif//PID_ADD_EXTRUSION_RATE
 #endif//PIDTEMP
+#ifdef PIDTEMPBED
+    bedKp = DEFAULT_bedKp;
+    bedKi = scalePID_i(DEFAULT_bedKi);
+    bedKd = scalePID_d(DEFAULT_bedKd);
+    updatePID();
+#endif
 
 SERIAL_ECHO_START;
 SERIAL_ECHOLNPGM("Hardcoded Default Settings Loaded");
