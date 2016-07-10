@@ -253,7 +253,7 @@ float extruder_offset[NUM_EXTRUDER_OFFSETS][EXTRUDERS] = {
 #endif
 };
 #endif
-uint8_t active_extruder = 0;
+int active_extruder = 0;
 int fanSpeed=0;
 #ifdef SERVO_ENDSTOPS
   int servo_endstops[] = SERVO_ENDSTOPS;

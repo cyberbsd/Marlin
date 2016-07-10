@@ -623,6 +623,7 @@ static void lcd_prepare_menu()
     MENU_ITEM(function, MSG_PREHEAT_ABS, lcd_preheat_abs0);
   #endif
 #endif
+    MENU_ITEM_EDIT(int3, MSG_ACTIVE_EXTRUDER, &active_extruder, 0, 1);
     MENU_ITEM(function, MSG_LOAD_FILAMENT,load_filament);
     MENU_ITEM(function, MSG_UNLOAD_FILAMENT,unload_filament);
     MENU_ITEM(function, MSG_COOLDOWN, lcd_cooldown);

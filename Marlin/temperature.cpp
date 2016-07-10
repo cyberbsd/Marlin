@@ -747,7 +747,11 @@ static void updateTemperaturesFromRawValues()
 {
     for(uint8_t e=0;e<EXTRUDERS;e++)
     {
+#ifdef ATOM_DUAL
+		current_temperature[e] = analog2temp(current_temperature_raw[0], 0);
+#else
         current_temperature[e] = analog2temp(current_temperature_raw[e], e);
+#endif
     }
     current_temperature_bed = analog2tempBed(current_temperature_bed_raw);
     #ifdef TEMP_SENSOR_1_AS_REDUNDANT
@@ -1242,7 +1246,7 @@ ISR(TIMER0_COMPB_vect)
       #endif
     } else WRITE(HEATER_0_PIN,0);
 	
-    #if EXTRUDERS > 1
+    #if EXTRUDERS > 1 
     soft_pwm_1 = soft_pwm[1];
     if(soft_pwm_1 > 0) WRITE(HEATER_1_PIN,1); else WRITE(HEATER_1_PIN,0);
     #endif
@@ -1406,7 +1410,11 @@ ISR(TIMER0_COMPB_vect)
     {
       current_temperature_raw[0] = raw_temp_0_value;
 #if EXTRUDERS > 1
+#ifdef ATOM_DUAL
+	  current_temperature_raw[1] = raw_temp_0_value;
+#else
       current_temperature_raw[1] = raw_temp_1_value;
+#endif
 #endif
 #ifdef TEMP_SENSOR_1_AS_REDUNDANT
       redundant_temperature_raw = raw_temp_1_value;

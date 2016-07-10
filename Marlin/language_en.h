@@ -131,5 +131,6 @@
 #define MSG_LOAD_FILAMENT                   "Load Filament"
 #define MSG_UNLOAD_FILAMENT                 "Unload Filament"
 #define MSG_CHANGE_FILAMENT 				  	 "Change Filament"
+#define MSG_ACTIVE_EXTRUDER					"Active Extruder"
 
 #endif // LANGUAGE_EN_H

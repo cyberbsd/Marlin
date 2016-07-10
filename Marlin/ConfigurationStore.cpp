@@ -258,11 +258,11 @@ SERIAL_ECHOLNPGM("Scaling factors:");
     SERIAL_ECHOLN(""); 
 #endif
 #ifdef PIDTEMPBED
-      CONFIG_ECHO_START;
+      SERIAL_ECHO_START;
       SERIAL_ECHOPAIR("  M304 P", bedKp);
       SERIAL_ECHOPAIR(" I", unscalePID_i(bedKi));
       SERIAL_ECHOPAIR(" D", unscalePID_d(bedKd));
-      SERIAL_EOL;
+      SERIAL_ECHOLN(""); 
 #endif
 } 
 #endif

@@ -19,7 +19,7 @@
 // build by the user have been successfully uploaded into firmware.
 #define STRING_VERSION_CONFIG_H __DATE__ " " __TIME__ // build date and time
 #define STRING_CONFIG_H_AUTHOR "(Clarence, ATOM 3DP)" // Who made the changes.
-
+//#define ATOM_DUAL //dual E
 // SERIAL_PORT selects which serial port should be used for communication with the host.
 // This allows the connection of wireless adapters (for instance) to non-default port pins.
 // Serial port 0 is still used by the Arduino bootloader regardless of this setting.
@@ -51,7 +51,11 @@
 // #define MACHINE_UUID "00000000-0000-0000-0000-000000000000"
 
 // This defines the number of extruders
+#ifdef ATOM_DUAL
+#define EXTRUDERS 2
+#else
 #define EXTRUDERS 1
+#endif
 
 //// The following define selects which power supply you have. Please choose the one that matches your setup
 // 1 = ATX
@@ -74,7 +78,7 @@
 //#define TMC2100 //stepper driver for TMC2100
 #define ATOM2LCD //LCD for ATOM2.0 Release
 #define ATOM_LASER //ATOM Laser engraver support
-//#define ATOM_BED //ATOM heatbed support
+#define ATOM_BED //ATOM heatbed support
 // Make delta curves from many straight lines (linear interpolation).
 // This is a trade-off between visible corners (not enough segments)
 // and processor overload (too many expensive sqrt calls).
@@ -100,7 +104,7 @@
 #define DELTA_RADIUS (DELTA_SMOOTH_ROD_OFFSET-DELTA_EFFECTOR_OFFSET-DELTA_CARRIAGE_OFFSET)
 
 // Print surface diameter/2 minus unreachable space (avoid collisions with vertical towers).
-#define DELTA_PRINTABLE_RADIUS 105.0
+#define DELTA_PRINTABLE_RADIUS 100.0
 
 // Effective X/Y positions of the three vertical towers.
 #define SIN_60 0.8660254037844386
@@ -462,7 +466,7 @@ const bool Z_MAX_ENDSTOP_INVERTING = false; // set to true to invert the logic o
     #define FRONT_PROBE_BED_POSITION -DELTA_PROBABLE_RADIUS
 
     // probe at the points of a lattice grid
-    #define AUTO_BED_LEVELING_GRID_POINTS 7
+    #define AUTO_BED_LEVELING_GRID_POINTS 11
     #define AUTO_BED_LEVELING_GRID_X ((RIGHT_PROBE_BED_POSITION - LEFT_PROBE_BED_POSITION) / (AUTO_BED_LEVELING_GRID_POINTS - 1))
     #define AUTO_BED_LEVELING_GRID_Y ((BACK_PROBE_BED_POSITION - FRONT_PROBE_BED_POSITION) / (AUTO_BED_LEVELING_GRID_POINTS - 1))
 
@@ -577,8 +581,8 @@ const bool Z_MAX_ENDSTOP_INVERTING = false; // set to true to invert the logic o
 // Offset of the extruders (uncomment if using more than one and relying on firmware to position when changing).
 // The offset has to be X=0, Y=0 for the extruder 0 hotend (default extruder).
 // For the other hotends it is their distance from the extruder 0 hotend.
-// #define EXTRUDER_OFFSET_X {0.0, 20.00} // (in mm) for each extruder, offset of the hotend on the X axis
-// #define EXTRUDER_OFFSET_Y {0.0, 5.00}  // (in mm) for each extruder, offset of the hotend on the Y axis
+#define EXTRUDER_OFFSET_X {0.0, 0.0} // (in mm) for each extruder, offset of the hotend on the X axis
+#define EXTRUDER_OFFSET_Y {0.0, 0.0}  // (in mm) for each extruder, offset of the hotend on the Y axis
 
 // The speed change that does not require acceleration (i.e. the software might assume it can be done instantaneously)
 #define DEFAULT_XYJERK                20.0    // (mm/sec)
@@ -612,11 +616,19 @@ const bool Z_MAX_ENDSTOP_INVERTING = false; // set to true to invert the logic o
 // Preheat Constants
 #define PLA_PREHEAT_HOTEND_TEMP 200
 #define PLA_PREHEAT_HPB_TEMP 40
+#ifdef ATOM_DUAL
+#define PLA_PREHEAT_FAN_SPEED 255   // Insert Value between 0 and 255
+#else
 #define PLA_PREHEAT_FAN_SPEED 0   // Insert Value between 0 and 255
+#endif
 
 #define ABS_PREHEAT_HOTEND_TEMP 240
 #define ABS_PREHEAT_HPB_TEMP 100
+#ifdef ATOM_DUAL
+#define ABS_PREHEAT_FAN_SPEED 100   // Insert Value between 0 and 255
+#else
 #define ABS_PREHEAT_FAN_SPEED 0   // Insert Value between 0 and 255
+#endif
 
 //LCD and SD support
 //#define ULTRA_LCD  //general LCD support, also 16x2

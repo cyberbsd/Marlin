@@ -264,7 +264,7 @@ extern unsigned long starttime;
 extern unsigned long stoptime;
 
 // Handling multiple extruders pins
-extern uint8_t active_extruder;
+extern int active_extruder;
 
 #ifdef DIGIPOT_I2C
 extern void digipot_i2c_set_current( int channel, float current );

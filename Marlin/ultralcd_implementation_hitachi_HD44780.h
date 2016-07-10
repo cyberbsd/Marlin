@@ -421,18 +421,35 @@ static void lcd_implementation_status_screen()
     lcd_printPGM(PSTR(LCD_STR_DEGREE " "));
     if (tTarget < 10)
         lcd.print(' ');
-
+#ifdef ATOM_DUAL
+#if TEMP_SENSOR_BED != 0
+	lcd.setCursor(9, 0);
+	tHotend=int(degBed() + 0.5);
+    tTarget=int(degTargetBed() + 0.5);
+    lcd.print(LCD_STR_BEDTEMP[0]);
+	lcd.print(itostr3(tHotend));
+    lcd.print('/');
+    lcd.print(itostr3left(tTarget));
+    lcd_printPGM(PSTR(LCD_STR_DEGREE " "));
+    if (tTarget < 10)
+        lcd.print(' ');
+#else
+	lcd.setCursor(18, 0);
+#endif
+	lcd.print('T');
+	lcd.print(active_extruder);
+#else
 # if EXTRUDERS > 1 || TEMP_SENSOR_BED != 0
     //If we have an 2nd extruder or heated bed, show that in the top right corner
     lcd.setCursor(10, 0);
-#  if EXTRUDERS > 1
-    tHotend = int(degHotend(1) + 0.5);
-    tTarget = int(degTargetHotend(1) + 0.5);
-    lcd.print(LCD_STR_THERMOMETER[0]);
-#  else//Heated bed
+#  if TEMP_SENSOR_BED != 0
     tHotend=int(degBed() + 0.5);
     tTarget=int(degTargetBed() + 0.5);
     lcd.print(LCD_STR_BEDTEMP[0]);
+#  else//Extruder 1
+    tHotend = int(degHotend(1) + 0.5);
+    tTarget = int(degTargetHotend(1) + 0.5);
+    lcd.print(LCD_STR_THERMOMETER[0]);
 #  endif
     lcd.print(itostr3(tHotend));
     lcd.print('/');
@@ -441,6 +458,7 @@ static void lcd_implementation_status_screen()
     if (tTarget < 10)
         lcd.print(' ');
 # endif//EXTRUDERS > 1 || TEMP_SENSOR_BED != 0
+#endif
 #endif//LCD_WIDTH > 19
 
 #if LCD_HEIGHT > 2
@@ -456,7 +474,7 @@ static void lcd_implementation_status_screen()
     lcd.print('%');
 #  endif//SDSUPPORT
 # else//LCD_WIDTH > 19
-#  if EXTRUDERS > 1 && TEMP_SENSOR_BED != 0
+#  if EXTRUDERS > 1 && TEMP_SENSOR_BED != 0 && !defined(ATOM_DUAL)
     //If we both have a 2nd extruder and a heated bed, show the heated bed temp on the 2nd line on the left, as the first line is filled with extruder temps
     tHotend=int(degBed() + 0.5);
     tTarget=int(degTargetBed() + 0.5);
