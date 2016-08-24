@@ -239,6 +239,7 @@ bool axis_known_position[3] = {false, false, false};
 float zprobe_zoffset;
 float run_time = 0;
 bool changing_filament = false;
+float eeprom_max_offset = 0;
 
 // Extruder offset
 #if EXTRUDERS > 1

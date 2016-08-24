@@ -4,7 +4,7 @@
 #include "ultralcd.h"
 #include "ConfigurationStore.h"
 
-void _EEPROM_writeData(int &pos, uint8_t* value, uint8_t size)
+void _EEPROM_writeData(int &pos, uint8_t* value, uint16_t size)
 {
     do
     {
@@ -14,7 +14,7 @@ void _EEPROM_writeData(int &pos, uint8_t* value, uint8_t size)
     }while(--size);
 }
 #define EEPROM_WRITE_VAR(pos, value) _EEPROM_writeData(pos, (uint8_t*)&value, sizeof(value))
-void _EEPROM_readData(int &pos, uint8_t* value, uint8_t size)
+void _EEPROM_readData(int &pos, uint8_t* value, uint16_t size)
 {
     do
     {
@@ -121,11 +121,17 @@ void Config_StoreSettings()
 #ifdef SAVE_G29_CORRECTION_MATRIX
   EEPROM_WRITE_VAR(i,bed_level);
 #endif
+  eeprom_max_offset = i;
   char ver2[4]=EEPROM_VERSION;
   i=EEPROM_OFFSET;
   EEPROM_WRITE_VAR(i,ver2); // validate data
   SERIAL_ECHO_START;
   SERIAL_ECHOLNPGM("Settings Stored");
+  // Report storage size
+  SERIAL_ECHO_START;
+  SERIAL_ECHOPGM("EEPROM ");
+  SERIAL_ECHOPAIR("  max offset ",eeprom_max_offset ); 
+  SERIAL_ECHOLN("");
 }
 #endif //EEPROM_SETTINGS
 
